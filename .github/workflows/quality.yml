@@ -92,6 +92,7 @@ jobs:
           cargo llvm-cov \
             --manifest-path crates/neuromorphic-adapter/Cargo.toml \
             --all-targets \
+            --all-features \
             --locked \
             --lcov \
             --output-path coverage/rust.lcov
