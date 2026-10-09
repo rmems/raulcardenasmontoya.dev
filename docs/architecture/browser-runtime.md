@@ -963,6 +963,25 @@ toolchain (`gzip -9 -c <file> | wc -c`, GNU gzip 1.14); on that host the
 `nir` + `protocol` row above is the committed #21 package (966,603 B,
 258,008 B gzip), so `plasticity` adds 17,515 B (7,611 B gzip) of WASM.
 
+RM-2057 replaces both committed `.wasm` files with Rust 1.99.0 builds. These
+were measured on 2026-10-09 on the same Windows 11 host, with rustc 1.99.0
+(b940084d7 2026-09-28), wasm-bindgen 0.2.126 and `gzip -9 -c <file> | wc -c`
+(GNU gzip 1.14):
+
+| Package (Rust 1.99.0) | `.wasm` raw | `.wasm` gzip | `.js` glue raw | `.js` glue gzip |
+| --- | ---: | ---: | ---: | ---: |
+| `default` (`neuromorphic-adapter/`) | 187,612 B | 66,923 B | 16,606 B | 3,169 B |
+| `labs`, `nir` + `protocol` + `plasticity` (`neuromorphic-adapter-labs/`) | 982,555 B | 264,878 B | 41,037 B | 6,310 B |
+
+The `.js`, `.d.ts` and `_bg.wasm.d.ts` files of both packages are
+byte-identical to the 1.98.1 packages; only the `.wasm` changed. Measured the
+same way on this host, the previously committed 1.98.1 `.wasm` files gzip to
+67,172 B (`default`) and 265,619 B (`labs`). So 1.99.0 makes the `default`
+`.wasm` 1,704 B smaller (249 B gzip) and the `labs` `.wasm` 1,563 B smaller
+(741 B gzip). The default `.js` glue is the same file as before, so the gap
+between 3,169 B here and 3,152 B in the 1.98.1 table comes from the measurement
+setup, not the file.
+
 - `npm run build:wasm-web` builds every profile. Each profile has its own cargo
   target directory (`target/`, `target/labs/`), so the outputs never overwrite
   each other. `npm run test:wasm-web-pkg` regenerates every profile and fails
