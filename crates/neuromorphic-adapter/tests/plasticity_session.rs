@@ -11,7 +11,7 @@
 //! demand, in the browser. Never hand-edit it; regenerate with:
 //!
 //! ```text
-//! cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features plasticity --test plasticity_session regenerate_plasticity_golden -- --ignored --exact
+//! cargo +1.99.0 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features plasticity --test plasticity_session regenerate_plasticity_golden -- --ignored --exact
 //! ```
 
 use limbic_critic::SimpleCritic;
@@ -28,6 +28,8 @@ const GOLDEN_PATH: &str = "src/data/plasticity/scripted-session.v1.json";
 const GOLDEN: &str = include_str!("../../../src/data/plasticity/scripted-session.v1.json");
 const GOLDEN_FORMAT: &str = "shipoftheseus.plasticity-session";
 const GENERATOR: &str = "crates/neuromorphic-adapter/tests/plasticity_session.rs";
+// Recorded in the committed v1 golden as it was generated (Rust 1.98.1). Changing
+// it changes the golden's bytes, so it moves only with a new golden version.
 const REGENERATE: &str = "cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features plasticity --test plasticity_session regenerate_plasticity_golden -- --ignored --exact";
 const LOCKFILE: &str = include_str!("../Cargo.lock");
 

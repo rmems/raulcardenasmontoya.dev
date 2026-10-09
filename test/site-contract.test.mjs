@@ -355,7 +355,7 @@ test('quality CI validates the locked Rust/WASM adapter before the frontend cont
   const readme = read('README.md');
 
   assert.match(workflow, /actions\/checkout@11d5960a326750d5838078e36cf38b85af677262/);
-  assert.match(workflow, /dtolnay\/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e/);
+  assert.match(workflow, /dtolnay\/rust-toolchain@fb523f40495206854c36b250850817ae0f83e3d1/);
   assert.match(workflow, /actions\/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020/);
   assert.match(workflow, /wasm32-unknown-unknown/);
   assert.match(workflow, /cargo fmt --manifest-path crates\/neuromorphic-adapter\/Cargo\.toml --check/);
@@ -369,7 +369,7 @@ test('quality CI validates the locked Rust/WASM adapter before the frontend cont
   const packageJson = read('package.json');
   assert.match(packageJson, /"validate:rust":/);
   assert.match(packageJson, /"validate": "npm test && npm run lint && npm run typecheck && npm run build && npm run validate:rust && npm run test:wasm-adapter && npm run test:wasm-web-pkg && npm run test:wasm-browser && npm run test:layout"/);
-  assert.match(readme, /Rust 1\.98\.1/);
+  assert.match(readme, /Rust 1\.99\.0/);
   assert.match(readme, /wasm32-unknown-unknown/);
   assert.match(readme, /wasm-bindgen-cli 0\.2\.126/);
 });

@@ -668,8 +668,8 @@ npm ci
 npm run perf:stages            # add `-- --json` for JSON, `-- --quick` for a smoke run
 
 # 2. The same harness as WASM, executed by Node's V8
-rustup target add wasm32-wasip1 --toolchain 1.98.1
-cargo +1.98.1 build --release --locked --target wasm32-wasip1 \
+rustup target add wasm32-wasip1 --toolchain 1.99.0
+cargo +1.99.0 build --release --locked --target wasm32-wasip1 \
   --manifest-path crates/neuromorphic-adapter/Cargo.toml --example stage_bench
 node scripts/perf/run-wasi-stage-bench.mjs \
   crates/neuromorphic-adapter/target/wasm32-wasip1/release/examples/stage_bench.wasm

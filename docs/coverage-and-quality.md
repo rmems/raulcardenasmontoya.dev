@@ -43,7 +43,8 @@ After `npm run coverage` on Linux with Rust **1.98.1** and `cargo-llvm-cov`:
 - **scripts/** (c8) — about **52%** statement coverage.
 
 Hosted Codecov percentages may differ until the default branch has uploaded at
-least once.
+least once. This baseline predates the move to Rust 1.99.0 (RM-2057) and has not
+been re-measured on the new pin.
 
 ## Exclusions
 
@@ -136,7 +137,7 @@ blockers unless branch protection is changed explicitly.
 | Symptom | Check |
 | --- | --- |
 | Missing Codecov check | `CODECOV_TOKEN` or OIDC; fork PR may skip upload |
-| `cargo llvm-cov` not found | `cargo install cargo-llvm-cov --locked` with Rust 1.98.1 |
+| `cargo llvm-cov` not found | `cargo install cargo-llvm-cov --locked` with Rust 1.99.0 |
 | Empty `coverage/lcov.info` | Run `npm run test:coverage` after `npm ci` |
 | `qlty check` red on PR | Qlty GitHub App findings on the diff (not the Actions upload job) |
 | Quality workflow red | Fix `npm run validate` first; coverage uploads run only after it passes |
