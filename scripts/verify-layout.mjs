@@ -225,11 +225,14 @@ async function main() {
   }
 
   const { launchChrome, openPage } = await import('./perf/cdp.mjs');
-  const { server, requests } = await serve(dist);
-  const origin = `http://127.0.0.1:${server.address().port}`;
-  const chrome = await launchChrome({ binary: browser, extraArgs: ['--no-sandbox'] });
   const failures = [];
+  let server = null;
+  let chrome = null;
   try {
+    let requests;
+    ({ server, requests } = await serve(dist));
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    chrome = await launchChrome({ binary: browser, extraArgs: ['--no-sandbox'] });
     const page = await openPage(chrome.connection);
     const measurements = [];
     const paths = await builtPagePaths(dist);
@@ -285,8 +288,8 @@ async function main() {
       );
     }
   } finally {
-    await chrome.close();
-    server.close();
+    await chrome?.close();
+    server?.close();
   }
   if (failures.length > 0) {
     throw new Error(`Layout check failed:\n${failures.join('\n')}`);
