@@ -132,6 +132,11 @@ export async function launchChrome({
 export class CdpConnection {
   static open(url, timeoutMs = 10_000) {
     return new Promise((resolve, reject) => {
+      if (typeof WebSocket === 'undefined') {
+        // Node 20 has no global WebSocket without --experimental-websocket.
+        reject(new Error(`could not connect to ${url}: this Node has no global WebSocket (use Node >= 22)`));
+        return;
+      }
       const socket = new WebSocket(url);
       const timer = setTimeout(() => {
         socket.close();
