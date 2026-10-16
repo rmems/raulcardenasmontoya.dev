@@ -201,10 +201,8 @@ test('offscreen and hidden islands stop both simulation ticks and rendering, the
   assert.equal(host.documentListeners.has('visibilitychange'), false);
 });
 
-test('an island with viewport targets runs while any target is on screen (#13 hero)', async (t) => {
-  const host = installHost();
-  t.after(() => host.restore());
-
+/** A demo runtime over stub seams that records whether the renderer is running. */
+function heroDemo() {
   const counts = { resumes: 0, running: false };
   const renderer = {
     async create() {
@@ -233,6 +231,14 @@ test('an island with viewport targets runs while any target is on screen (#13 he
     inViewport: false,
     documentHidden: false,
   });
+  return { counts, demo };
+}
+
+test('an island with viewport targets runs while any target is on screen (#13 hero)', async (t) => {
+  const host = installHost();
+  t.after(() => host.restore());
+
+  const { counts, demo } = heroDemo();
   const mesh = { name: 'mesh' };
   const panel = { name: 'panel' };
   const island = {
@@ -279,34 +285,7 @@ test('a closed telemetry panel does not keep the island running or start it (#13
   const host = installHost();
   t.after(() => host.restore());
 
-  const counts = { resumes: 0, running: false };
-  const renderer = {
-    async create() {
-      return {
-        pause() {
-          counts.running = false;
-        },
-        resume() {
-          counts.running = true;
-          counts.resumes += 1;
-        },
-        dispose() {},
-        freeze() {},
-        setCameraMotionEnabled() {},
-      };
-    },
-  };
-  const wasm = {
-    async init() {
-      return { pause() {}, resume() {}, dispose() {} };
-    },
-  };
-  const demo = runtime.createDemoRuntime({
-    capabilities: { prefersReducedMotion: false, webgl: true, wasm: true, worker: false },
-    seams: { renderer, wasm },
-    inViewport: false,
-    documentHidden: false,
-  });
+  const { counts, demo } = heroDemo();
   const mesh = { name: 'mesh' };
   const listeners = new Map();
   // A closed <details>: its summary is laid out, so it intersects.
