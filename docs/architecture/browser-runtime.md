@@ -389,6 +389,96 @@ synaptic-wiring projection (same snapshot) ──┴→ mapSpikesThroughTopology
   exposes `stats()`, `recent(limit)` (with `u64` steps as strings), and
   `renderer()`.
 
+### Live telemetry panel (GitHub #9 / Linear RM-1652)
+
+The demo island carries a collapsible, closed-by-default `<details>` panel
+(`src/components/DemoTelemetry.astro`) with a spike raster, a neuron
+inspector, and the active input and encoder state. It is a consumer of the
+seams above, never a second source: `src/runtime/demo-telemetry.ts` holds the
+DOM-free logic and `src/runtime/telemetry-view.ts` writes the DOM. Both load
+when a reader first opens the panel; the always-loaded
+`src/runtime/telemetry-entry.ts` only holds the per-island source registry and
+that lazy binder.
+
+```text
+channel.publish(snapshot) ─→ live-wasm SpikeEventBuffer ─ subscribe(batch) ─→ raster ring (per step)
+                         └─ channel.latest() (same step) ─────────────────────┘
+raster ring + latest snapshot ─ throttled flush (default 4 Hz) ─→ canvas + inspector DOM
+```
+
+- **Sources.** `live-seams.ts` registers each island's `live-wasm` buffer,
+  read-only channel (`latest()` only), and input source with
+  `registerLiveTelemetrySources`, which rejects any other provenance. Per step,
+  the panel records the batch's `neuromod` spikes and the matching snapshot's
+  `encoded_spike_count` (skipping a batch whose snapshot is not the same step).
+  Membrane potentials, topology, encoder mode and diagnostics, and
+  `encoder_features` are read from that snapshot. The input source
+  (`pointer`/`scripted`) is the one value from the site rather than the
+  runtime. The live seams keep a fixed ring of the last 128 steps' sources,
+  and the panel looks up the step it displays, so a pause during an in-flight
+  tick still shows the right source. Nothing is computed or synthesized for
+  display.
+- **Only exported fields.** A selected neuron shows its upstream `NeuronId`,
+  `neuromod` membrane potential, whether it spiked at the shown step, its
+  sampled spike steps, and its outgoing and incoming canonical edges with real
+  weights, delays, and polarity. Outgoing edges are exactly the range the
+  spike-event seam maps spikes onto, so they are the edges the renderer pulses.
+  Contract 5 exports no firing threshold, neuron-model tag, or other neuron
+  parameters, so none are shown; contract-3 encoder fields (bridge defaults)
+  and contract-4 features (not exported) are not shown either.
+- **Cost and cadence.** A closed or disabled panel holds no subscription, timer,
+  or observer. While open, sampling writes a few bytes per step into a fixed
+  ring (`DEFAULT_RASTER_STEPS` = 120 steps × neurons); DOM work happens only in
+  flushes coalesced to the requested cadence (default 4 Hz, capped at one per
+  step) and only after new data or a demo-mode change. Reduced motion caps the
+  cadence at 1 Hz, including when the preference changes while the panel is
+  open. `getDemoTelemetry(island)` (in `telemetry-entry.ts`)
+  returns the controller once the panel has been opened; its `setCadenceHz(hz)`
+  and `setEnabled(false)` let a performance budget lower or stop telemetry
+  without touching the simulation or the renderer.
+- **Pausing.** Telemetry receives data only while the simulation ticks and the
+  renderer feeds the buffer, so it stops with the demo (off-screen, background
+  tab, user pause, reduced motion before Play). After a user pause the last
+  sampled step stays inspectable. Closing the panel drops the sampled window.
+- **Origin labels.** The panel uses the execution-origin vocabulary: it shows
+  `LIVE · Rust/WASM` only while it displays values from the `live-wasm`
+  buffer's runtime, and `UNAVAILABLE · Rust/WASM` otherwise, including the
+  static and no-JavaScript state. Each block names its crate layer
+  (`kinetic-signals`, `axon-encoder`, `neuromod`, `synaptic-wiring`), and the
+  panel restates that contract 5 does not feed `neuromod` spikes back into the
+  mesh.
+- **Inspection.** Under `astro dev`, `globalThis.__neuromorphicTelemetryPanel`
+  exposes `inspect()`, `setCadenceHz(hz)`, and `setEnabled(enabled)`. The panel
+  element reports `data-telemetry-state` and `data-telemetry-step`.
+
+### Performance budgets and adaptive quality (GitHub #10 / Linear RM-1646)
+
+Budgets, the measured tables with their machine and browser context, the
+buffer audit, and how to reproduce each measurement are in
+[`performance-budgets.md`](performance-budgets.md).
+
+- **Adaptive quality is presentation only.** `adaptive-quality.ts` steps the
+  renderer's pixel-ratio cap, pulse cap, frame-rate cap, and telemetry refresh
+  cadence down under sustained frame-time pressure, with hysteresis. It never
+  reaches the WASM seam. The 50 ms tick, input packets, and spike-event
+  buffering are identical at every level, and
+  `test/performance-semantics.test.mjs` checks snapshots byte for byte.
+- **Telemetry cadence for consumers.** The island carries `data-demo-quality`
+  and `data-demo-telemetry-cadence-ms`. The live renderer seam exposes the
+  controller's read side as `renderer.quality`, and `shouldSampleTelemetry`
+  keys refreshes to simulation steps. For the live telemetry panel,
+  `live-seams.ts` registers the quality cadence as a ceiling
+  (`registerTelemetryCadenceCap`). The panel's controller picks it up when it
+  is first opened and on every level change (`setCadenceCapHz`), and it can
+  only lower the panel's own 4 Hz (1 Hz under reduced motion).
+- **Snapshot transfer.** The bridge reads each wasm-bindgen getter once, frees
+  the `WasmState` handle immediately instead of waiting for a GC finalizer,
+  and checks the routed topology by value against the last verified copy.
+  Exported values are unchanged.
+- **Opt-in timing.** Under `astro dev`, or with `?neuromorphic-perf`,
+  `globalThis.__neuromorphicPerf` reports per-stage timing (`perf-probe.ts`).
+  Normal visits create no probe.
+
 ### `neuromod` engine integration
 
 `neuromod` owns neuron dynamics and spike generation. `synaptic-wiring` owns
