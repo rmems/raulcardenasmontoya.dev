@@ -200,3 +200,137 @@ test('offscreen and hidden islands stop both simulation ticks and rendering, the
   assert.equal(host.observers[0].disconnected, true);
   assert.equal(host.documentListeners.has('visibilitychange'), false);
 });
+
+/** A demo runtime over stub seams that records whether the renderer is running. */
+function heroDemo() {
+  const counts = { resumes: 0, running: false };
+  const renderer = {
+    async create() {
+      return {
+        pause() {
+          counts.running = false;
+        },
+        resume() {
+          counts.running = true;
+          counts.resumes += 1;
+        },
+        dispose() {},
+        freeze() {},
+        setCameraMotionEnabled() {},
+      };
+    },
+  };
+  const wasm = {
+    async init() {
+      return { pause() {}, resume() {}, dispose() {} };
+    },
+  };
+  const demo = runtime.createDemoRuntime({
+    capabilities: { prefersReducedMotion: false, webgl: true, wasm: true, worker: false },
+    seams: { renderer, wasm },
+    inViewport: false,
+    documentHidden: false,
+  });
+  return { counts, demo };
+}
+
+test('an island with viewport targets runs while any target is on screen (#13 hero)', async (t) => {
+  const host = installHost();
+  t.after(() => host.restore());
+
+  const { counts, demo } = heroDemo();
+  const mesh = { name: 'mesh' };
+  const panel = { name: 'panel' };
+  const island = {
+    ...fakeIsland(),
+    querySelectorAll: (selector) => (selector === '[data-demo-viewport]' ? [mesh, panel] : []),
+  };
+  assert.deepEqual(enhance.viewportTargets(island), [mesh, panel]);
+  const bare = fakeIsland();
+  assert.deepEqual(enhance.viewportTargets(bare), [bare], 'islands without targets observe their root');
+
+  const binding = enhance.bindDemoIsland(island, demo);
+  const [observer] = host.observers;
+  assert.deepEqual(observer.targets, [mesh, panel], 'the mesh and the panel are observed, not the whole hero');
+  const report = async (...entries) => {
+    observer.callback(entries.map(([target, isIntersecting]) => ({ target, isIntersecting })));
+    await flush();
+    await flush();
+  };
+
+  // Hero copy alone in view (both targets off screen): nothing starts.
+  await report([mesh, false], [panel, false]);
+  assert.equal(island.dataset.mode, 'awaiting-play');
+  assert.equal(counts.resumes, 0);
+
+  await report([mesh, true]);
+  assert.equal(island.dataset.mode, 'live');
+  assert.equal(counts.running, true);
+
+  // Scrolled down to the open panel: the mesh leaves, the panel keeps it fed.
+  await report([panel, true]);
+  await report([mesh, false]);
+  assert.equal(counts.running, true, 'the panel alone keeps the island running');
+
+  await report([panel, false]);
+  assert.equal(counts.running, false, 'neither target on screen: paused');
+
+  await report([mesh, true]);
+  assert.equal(counts.running, true);
+  binding.dispose();
+  assert.equal(observer.disconnected, true);
+});
+
+test('a closed telemetry panel does not keep the island running or start it (#13 hero)', async (t) => {
+  const host = installHost();
+  t.after(() => host.restore());
+
+  const { counts, demo } = heroDemo();
+  const mesh = { name: 'mesh' };
+  const listeners = new Map();
+  // A closed <details>: its summary is laid out, so it intersects.
+  const panel = {
+    name: 'panel',
+    tagName: 'DETAILS',
+    open: false,
+    addEventListener: (type, listener) => listeners.set(type, listener),
+    removeEventListener: (type) => listeners.delete(type),
+  };
+  const island = {
+    ...fakeIsland(),
+    querySelectorAll: (selector) => (selector === '[data-demo-viewport]' ? [mesh, panel] : []),
+  };
+
+  const binding = enhance.bindDemoIsland(island, demo);
+  const [observer] = host.observers;
+  const report = async (...entries) => {
+    observer.callback(entries.map(([target, isIntersecting]) => ({ target, isIntersecting })));
+    await flush();
+    await flush();
+  };
+
+  // Following #live-telemetry: only the closed summary is on screen. Nothing starts.
+  await report([mesh, false], [panel, true]);
+  assert.equal(counts.resumes, 0, 'a closed panel never starts the island');
+  assert.equal(island.dataset.mode, 'awaiting-play');
+
+  // Opening it counts: toggle fires no intersection entry, so the listener re-evaluates.
+  panel.open = true;
+  listeners.get('toggle')();
+  await flush();
+  await flush();
+  assert.equal(counts.running, true, 'an open panel on screen runs the island');
+
+  // Closing it again, with the mesh off screen, pauses.
+  panel.open = false;
+  listeners.get('toggle')();
+  await flush();
+  await flush();
+  assert.equal(counts.running, false, 'closing the panel pauses an island whose mesh is off screen');
+
+  await report([mesh, true]);
+  assert.equal(counts.running, true, 'the mesh on screen runs it whatever the panel state');
+
+  binding.dispose();
+  assert.equal(listeners.has('toggle'), false, 'disposal removes the toggle listener');
+});

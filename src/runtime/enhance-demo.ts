@@ -32,6 +32,13 @@ function viewElements(root: HTMLElement): DemoViewElements {
   };
 }
 
+/** Elements whose visibility gates the island (`[data-demo-viewport]`), else the root. */
+export function viewportTargets(root: HTMLElement): Element[] {
+  const marked =
+    typeof root.querySelectorAll === 'function' ? Array.from(root.querySelectorAll('[data-demo-viewport]')) : [];
+  return marked.length > 0 ? marked : [root];
+}
+
 function motionQueryList(host: Window): MediaQueryList | undefined {
   if (typeof host.matchMedia !== 'function') {
     return undefined;
@@ -116,6 +123,9 @@ export function bindDemoIsland(root: HTMLElement, runtime?: DemoRuntime): BoundI
     window.removeEventListener('pageshow', onPageShow);
     motionQuery?.removeEventListener('change', onMotionChange);
     root.removeEventListener('webglcontextlost', onContextLost, contextLostCapture);
+    for (const target of targets) {
+      target.removeEventListener?.('toggle', evaluateViewport);
+    }
     observer?.disconnect();
     telemetry?.dispose();
     boundRuntime.dispose();
@@ -129,19 +139,47 @@ export function bindDemoIsland(root: HTMLElement, runtime?: DemoRuntime): BoundI
   motionQuery?.addEventListener('change', onMotionChange);
   root.addEventListener('webglcontextlost', onContextLost, contextLostCapture);
 
+  // The island runs while any of its viewport targets is on screen. In the
+  // homepage hero those are the mesh and the telemetry panel, so hero copy
+  // alone in view (the mesh still below the fold on a phone) starts nothing,
+  // and reading the open panel keeps it fed. Islands without targets use the
+  // whole root.
+  const targets = viewportTargets(root);
+  const intersecting = new Set<Element>();
+  // A closed <details> still lays out its <summary>, which would count as on
+  // screen, so a collapsed telemetry panel must not keep the island running or
+  // start it before the mesh has been seen. Opening it counts again.
+  const countsAsVisible = (target: Element): boolean =>
+    !(target.tagName === 'DETAILS' && !(target as HTMLDetailsElement).open);
+  const evaluateViewport = (): void => {
+    const visible = [...intersecting].some(countsAsVisible);
+    void boundRuntime.setInViewport(visible).then(paint);
+  };
   const observer =
     'IntersectionObserver' in window
       ? new IntersectionObserver(
           (entries) => {
-            const visible = entries.some((entry) => entry.isIntersecting);
-            void boundRuntime.setInViewport(visible).then(paint);
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                intersecting.add(entry.target);
+              } else {
+                intersecting.delete(entry.target);
+              }
+            }
+            evaluateViewport();
           },
           { threshold: 0.2 },
         )
       : null;
 
   if (observer) {
-    observer.observe(root);
+    for (const target of targets) {
+      observer.observe(target);
+      // Opening or closing a panel fires no new intersection entry.
+      if (target.tagName === 'DETAILS' && typeof target.addEventListener === 'function') {
+        target.addEventListener('toggle', evaluateViewport);
+      }
+    }
   } else {
     void boundRuntime.setInViewport(true).then(paint);
   }

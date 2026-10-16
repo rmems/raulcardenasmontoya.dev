@@ -39,9 +39,43 @@ test('every requested primary route is backed by an Astro page', () => {
 
 test('the responsive stylesheet does not force horizontal scrolling on narrow screens', () => {
   const styles = read('src/styles/global.css');
+  const packageJson = JSON.parse(read('package.json'));
+  const layoutCheck = read('scripts/verify-layout.mjs');
 
   assert.doesNotMatch(styles, /min-width:320px/);
   assert.match(styles, /@media\s*\(max-width:\s*360px\)/);
+  // Long words wrap, and the largest headings are capped by the viewport,
+  // not by rem, so 200% text cannot widen the page.
+  assert.match(styles, /body \{[^}]*overflow-wrap: break-word;/);
+  assert.match(styles, /\.primary-nav \{ flex-wrap: wrap;/);
+  assert.match(styles, /font-size: min\(17vw, 5rem\)/);
+  // Fraction tracks may shrink below their content (`minmax(0, …fr)`, or a
+  // minimum no wider than the grid), so a wide fallback font wraps text
+  // instead of widening the page. Only the desktop header keeps
+  // content-sized side tracks (its navigation wraps).
+  const contentSizedTracks = [...styles.matchAll(/grid-template-columns:\s*([^;]+);/g)]
+    .map((match) => match[1].trim())
+    .filter((tracks) =>
+      /(^|[\s(,])\d*\.?\d+fr/.test(
+        tracks.replace(/minmax\(0, \d*\.?\d+fr\)/g, '').replace(/minmax\(min\(100%, \d*\.?\d+rem\), \d*\.?\d+fr\)/g, ''),
+      ),
+    );
+  assert.deepEqual(contentSizedTracks, ['1fr auto 1fr']);
+  assert.doesNotMatch(styles, /white-space: nowrap/, 'labels and links wrap when their box is narrow');
+  // The live telemetry panel (homepage) shrinks and stacks with text size,
+  // and the layout check measures the homepage with it open.
+  const telemetryStyles = read('src/styles/telemetry.css');
+  assert.match(telemetryStyles, /container: telemetry-block \/ inline-size;/);
+  assert.match(telemetryStyles, /@container telemetry-block \(max-width: 15rem\)/);
+  assert.match(telemetryStyles, /\.demo-telemetry-features li \{[^}]*grid-template-columns: 1\.4rem minmax\(0, 8\.5rem\) minmax\(2\.5rem, 1fr\) 3rem;/);
+  assert.match(layoutCheck, /openTelemetryPanel/);
+  // Project cards get fewer, wider columns as text grows instead of cramped ones.
+  assert.match(styles, /\.project-grid \{[^}]*grid-template-columns: repeat\(auto-fit, minmax\(min\(100%, 18rem\), 1fr\)\);/);
+  // Every built page is loaded at 320 to 1024 px with 100% and 200% text in CI.
+  assert.equal(packageJson.scripts['test:layout'], 'node --experimental-websocket scripts/verify-layout.mjs');
+  assert.match(packageJson.scripts.validate, /npm run build && .* && npm run test:layout$/);
+  assert.match(layoutCheck, /LAYOUT_WIDTHS = Object\.freeze\(\[320, 360, 375, 768, 1024\]\)/);
+  assert.match(layoutCheck, /TEXT_SCALES = Object\.freeze\(\['100%', '200%'\]\)/);
 });
 
 test('the static site does not depend on remotely hosted fonts', () => {
@@ -155,7 +189,8 @@ test('the homepage ships a static neuromorphic diagram that remains usable witho
   assert.match(island, /Play animation/);
   assert.match(island, /aria-live="polite"/);
   assert.match(island, /role="status"/);
-  assert.match(island, /Static neuromorphic pipeline/);
+  // The static first paint is a drawing of the exact live topology (#13).
+  assert.match(island, /Static drawing of the live network/);
   assert.match(island, /origin="static-diagram"/);
   assert.match(island, /runtimeBound/);
   assert.doesNotMatch(island, /origin="live-wasm"/);
@@ -181,6 +216,51 @@ test('the homepage ships a static neuromorphic diagram that remains usable witho
   assert.match(enhance, /removeEventListener\('webglcontextlost', onContextLost, contextLostCapture\)/);
   assert.match(enhance, /addEventListener\('webglcontextlost', onContextLost, contextLostCapture\)/);
   assert.doesNotMatch(island, /client:only/);
+});
+
+test('the homepage hero hosts the live demo static-first and traces it to its crates', () => {
+  const page = read('src/pages/index.astro');
+  const island = read('src/components/NeuromorphicDemo.astro');
+  const styles = read('src/styles/hero.css');
+  const telemetry = read('src/components/DemoTelemetry.astro');
+  const enhance = read('src/runtime/enhance-demo.ts');
+
+  // The hero copy stays in the page and is the first thing in the island.
+  assert.match(page, /<NeuromorphicDemo>\s*<div class="hero-heading" slot="heading">/);
+  assert.match(page, /<h1 id="hero-title">Building <em>inspectable<\/em> systems for intelligent work\.<\/h1>/);
+  assert.match(page, /class="button button-primary" href="\/work\/"/);
+  assert.match(island, /<section class="hero hero-live" aria-labelledby="hero-title">/);
+  assert.ok(island.indexOf('<slot />') < island.indexOf('<figure class="hero-mesh"'), 'copy precedes the mesh');
+
+  // Static first: the build draws the audited topology into a reserved box,
+  // and the WebGL surface stacks over the same box.
+  assert.match(island, /staticMeshGeometry\(topology\)/);
+  assert.match(island, /const topology = auditedBrowserTopology\(\);/);
+  assert.match(styles, /\.hero-mesh-stage \{[^}]*aspect-ratio: 1 \/ 1;/);
+  assert.match(styles, /\.hero-mesh \.demo-surface\[hidden\] \{\s*display: block;\s*visibility: hidden;/);
+  assert.match(styles, /\.hero-mesh \.demo-surface:not\(\[hidden\]\) \+ \.hero-mesh-static \{ visibility: hidden; \}/);
+
+  // Provenance: runtime-bound origin label, static crate links, evidence kept apart.
+  assert.match(island, /simulating in this browser/);
+  assert.match(island, /liveCrateLayers\.map/);
+  assert.match(island, /href=\{crateLayerHref\(layer\)\}/);
+  assert.match(island, /href="#live-telemetry"/);
+  assert.match(telemetry, /id="live-telemetry"/);
+  assert.match(island, /href="\/labs\/"/);
+  assert.match(island, /href="\/protocol\/"/);
+  assert.match(island, /CUDA and FPGA results are <a href="\/evidence\/">recorded separately<\/a> and never run in this browser/);
+
+  // Viewport gating follows the mesh and the panel, not the whole hero.
+  assert.match(island, /<figure class="hero-mesh" data-demo-viewport>/);
+  assert.match(telemetry, /data-demo-viewport/);
+  assert.match(enhance, /querySelectorAll\('\[data-demo-viewport\]'\)/);
+
+  // Reduced motion keeps an explicit Play, and a hidden Play stays hidden
+  // (`.button` sets a display that would otherwise override `hidden`).
+  // The homepage never loads the labs package.
+  assert.match(island, /data-demo-play hidden>Play animation</);
+  assert.match(read('src/styles/global.css'), /\.button\[hidden\] \{ display: none; \}/);
+  assert.doesNotMatch(`${page}${island}${styles}`, /neuromorphic-adapter-labs|labs\/nir|plasticity/i);
 });
 
 test('the protocol route replays recorded corpus-ipc fixtures static-first and labels them distinctly', () => {
@@ -288,7 +368,7 @@ test('quality CI validates the locked Rust/WASM adapter before the frontend cont
   assert.match(workflow, /BROWSER_BIN="\$\{\{ steps\.chrome\.outputs\.chrome-path \}\}" npm run validate/);
   const packageJson = read('package.json');
   assert.match(packageJson, /"validate:rust":/);
-  assert.match(packageJson, /"validate": "npm test && npm run lint && npm run typecheck && npm run build && npm run validate:rust && npm run test:wasm-adapter && npm run test:wasm-web-pkg && npm run test:wasm-browser"/);
+  assert.match(packageJson, /"validate": "npm test && npm run lint && npm run typecheck && npm run build && npm run validate:rust && npm run test:wasm-adapter && npm run test:wasm-web-pkg && npm run test:wasm-browser && npm run test:layout"/);
   assert.match(readme, /Rust 1\.98\.1/);
   assert.match(readme, /wasm32-unknown-unknown/);
   assert.match(readme, /wasm-bindgen-cli 0\.2\.126/);
