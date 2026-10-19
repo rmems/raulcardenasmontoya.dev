@@ -30,7 +30,7 @@ steps need `CODECOV_TOKEN`, `QLTY_COVERAGE_TOKEN` or OIDC and are not local gate
 - `src/content/notes/` (schema in `src/content.config.ts`) and `src/content/native-evidence/`: Markdown notes and recorded CUDA/FPGA evidence JSON.
 - `src/runtime/`, `src/native-evidence/`, `src/protocol/`: browser runtime for the WASM demos, evidence parser and catalog, and `/protocol/` viewer.
 - `crates/neuromorphic-adapter/`: Rust crate built for `wasm32-unknown-unknown`, with its own `Cargo.lock` and `rust-toolchain.toml`.
-- `public/wasm/neuromorphic-adapter/` and `neuromorphic-adapter-labs/`: committed, generated browser packages. Regenerate with `npm run build:wasm-web`.
+- `public/wasm/neuromorphic-adapter/` and `public/wasm/neuromorphic-adapter-labs/`: committed, generated browser packages. Regenerate with `npm run build:wasm-web`.
 - `scripts/verify-*.mjs`, `scripts/perf/`: verification and measurement scripts. `test/*.test.mjs` is the `node --test` suite (`test/fixtures/`).
 - `docs/architecture/` is the design reference. `CONTENT.md` is the publishing checklist. `docs/coverage-and-quality.md` covers coverage.
 
