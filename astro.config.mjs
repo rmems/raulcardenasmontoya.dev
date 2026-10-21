@@ -1,3 +1,9 @@
 import { defineConfig } from 'astro/config';
 
-export default defineConfig({ site: 'https://raulcardenasmontoya.dev', output: 'static' });
+import sitemap from '@astrojs/sitemap';
+
+export default defineConfig({
+  site: 'https://raulcardenasmontoya.dev',
+  output: 'static',
+  integrations: [sitemap()]
+});

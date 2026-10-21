@@ -336,6 +336,15 @@ test('page metadata includes canonical and complete social sharing basics', () =
   assert.match(layout, /name="theme-color"/);
 });
 
+test('sitemap, robots.txt and a 1200x630 social card are wired up', () => {
+  const png = readFileSync(new URL('../public/assets/social-card.png', import.meta.url));
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+  assert.match(read('astro.config.mjs'), /sitemap\(\)/);
+  assert.match(read('public/robots.txt'), /^Sitemap: https:\/\/raulcardenasmontoya\.dev\/sitemap-index\.xml$/m);
+  assert.match(read('src/layouts/BaseLayout.astro'), /og:image:width" content="1200"/);
+});
+
 test('portfolio stays static and deploys only through GitHub Pages', () => {
   const astroConfig = read('astro.config.mjs');
   const workflow = read('.github/workflows/quality.yml');
