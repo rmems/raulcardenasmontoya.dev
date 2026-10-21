@@ -40,7 +40,8 @@ steps need `CODECOV_TOKEN`, `QLTY_COVERAGE_TOKEN` or OIDC and are not local gate
 - Do not invent benchmark numbers; leave the native-evidence catalog empty without a measured capture (`AGENTS.md`, `CONTENT.md`).
 - Do not hand-edit `public/wasm/**`; `test:wasm-web-pkg` fails on drift from the locked toolchain.
 - The browser dependency policy in `scripts/verify-browser-dependencies.mjs` is enforced by `validate:rust`; do not loosen it to pass.
-- `src/data/site.ts` `email` stays `null` until a public address is chosen.
+- `src/data/site.ts` carries no `null` placeholders (a contract test enforces it): the public email is `montoyaraul34@gmail.com` and the résumé is `public/resume.pdf` (`resumePath: '/resume.pdf'`). Keep the résumé single column with a real text layer; check it with `pdftotext public/resume.pdf -`.
+- `site.title` is `AI Engineer`; page titles and descriptions lead with the full name, and `BaseLayout.astro` emits Person JSON-LD whose `sameAs` is every value in `site.social`. Add new profiles to `social` only.
 - Source files here have no SPDX headers (no `.astro`, `.ts`, `.mjs` or `.rs` file carries one); do not add them.
 
 ## Gotchas
