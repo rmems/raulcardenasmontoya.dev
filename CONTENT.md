@@ -20,7 +20,7 @@ The homepage hero's crate trail comes from `src/data/live-runtime.ts`. When the 
 
 Recorded `corpus-ipc` protocol fixtures for `/protocol/` live in `public/protocol/fixtures/v1/` with an out-of-band SHA-256 `manifest.json`. They are generated from a deterministic adapter replay and labelled as derived, not captured. Regenerate them with the command in `crates/neuromorphic-adapter/README.md` instead of editing bytes by hand, and never present them as hardware or live-service captures.
 
-`public/assets/social-card.png` is a local placeholder social image. Replace it later with a final branded card if desired.
+`public/assets/social-card.png` is the 1200×630 social card (profile photo + name). Regenerate it with `node scripts/build-social-card.mjs`.
 
 ## Domain safety
 
