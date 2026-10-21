@@ -1,6 +1,6 @@
 # shipoftheseus.dev
 
-A static Astro + TypeScript portfolio for AI/ML systems engineering. It is local-only until explicitly approved for deployment.
+A static Astro + TypeScript portfolio for AI/ML systems engineering. It deploys to GitHub Pages at `raulcardenasmontoya.dev` from `main`.
 
 ## Local development
 
@@ -25,7 +25,7 @@ WASM_BINDGEN_BIN="$(command -v wasm-bindgen)" BROWSER_BIN="$(command -v google-c
 
 The browser-loadable adapter packages committed at `public/wasm/neuromorphic-adapter/` (homepage) and `public/wasm/neuromorphic-adapter-labs/` (off-homepage labs, built with extra cargo features; profiles in `scripts/wasm-profiles.mjs`) are generated output — deterministic under the locked toolchain. Regenerate both after changing the crate or its dependencies with `WASM_BINDGEN_BIN="$(command -v wasm-bindgen)" npm run build:wasm-web`; `npm run test:wasm-web-pkg` (part of `validate`) fails on drift.
 
-Pull requests provision these dependencies and run the same command in CI; no deployment workflow is included.
+Pull requests provision these dependencies and run the same command in CI. The **Deploy** workflow (`.github/workflows/deploy.yml`) repeats the validation on pushes to `main` and then publishes `dist` to GitHub Pages.
 
 Coverage and Qlty uploads run in the **Quality** workflow (`coverage report and
 uploads` job after `validate`). See
@@ -46,14 +46,8 @@ Codecov/Qlty setup, and fork-PR behavior.
 - Favicon: `public/favicon.svg`
 - Social-card placeholder: `public/assets/social-card.png`
 
-## Cloudflare Pages (when explicitly approved)
+## GitHub Pages
 
-Connect the dedicated `shipoftheseus.dev` repository in Cloudflare Pages, then use:
+`.github/workflows/deploy.yml` runs on every push to `main`: `npm ci`, `npm run validate`, `npm run build` (Astro, output `dist`), then `actions/upload-pages-artifact` and `actions/deploy-pages` (`pages: write`, `id-token: write`, `github-pages` environment). `npm run build` needs only Node 20.19+ or 22.12+ because the browser WASM packages are committed under `public/wasm/`; the Rust toolchain is installed only for `validate`.
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Node.js: 20.19+ or 22.12+
-
-Point only `shipoftheseus.dev` and optionally `www.shipoftheseus.dev` at this Pages project. Do **not** modify `hooks.shipoftheseus.dev`: it is a separately active GitHub-webhook Cloudflare Tunnel endpoint, outside this portfolio's scope.
-
-No custom-domain attachment, redirect, or deployment configuration is committed. Those remain explicit release actions after the site and domain plan are approved.
+One-time repository settings: Settings → Pages → Source: **GitHub Actions**; Settings → Pages → Custom domain: `raulcardenasmontoya.dev` (save it; `public/CNAME` alone does not set this for Actions publishing); once DNS resolves and the certificate is issued, turn on **Enforce HTTPS**. `public/CNAME` keeps the custom domain pinned in the built site. Manual runs only deploy from `main`.

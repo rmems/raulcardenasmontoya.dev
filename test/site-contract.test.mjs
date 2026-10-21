@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -336,17 +336,32 @@ test('page metadata includes canonical and complete social sharing basics', () =
   assert.match(layout, /name="theme-color"/);
 });
 
-test('portfolio stays static without a repository hosting configuration', () => {
+test('portfolio stays static and deploys only through GitHub Pages', () => {
   const astroConfig = read('astro.config.mjs');
   const workflow = read('.github/workflows/quality.yml');
+  const deploy = read('.github/workflows/deploy.yml');
   const readme = read('README.md');
 
   assert.match(astroConfig, /output:\s*'static'/);
   assert.match(workflow, /npm run validate/);
   assert.doesNotMatch(workflow, /deploy|wrangler|cloudflare/i);
-  assert.match(readme, /hooks\.shipoftheseus\.dev/);
+  assert.doesNotMatch(deploy, /wrangler|cloudflare|netlify/i);
+  assert.match(deploy, /branches: \[main\]/);
+  assert.match(deploy, /npm run validate/);
+  assert.match(deploy, /npm run build/);
+  assert.match(deploy, /actions\/upload-pages-artifact@[0-9a-f]{40}/);
+  assert.match(deploy, /path: dist/);
+  assert.match(deploy, /actions\/deploy-pages@[0-9a-f]{40}/);
+  assert.match(deploy, /pages: write/);
+  assert.match(deploy, /id-token: write/);
+  assert.match(deploy, /name: github-pages/);
+  assert.equal(read('public/CNAME').trim(), 'raulcardenasmontoya.dev');
+  assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/);
+  assert.match(readme, /Custom domain: `raulcardenasmontoya\.dev`/);
+  const deployWorkflows = readdirSync(new URL('../.github/workflows/', import.meta.url)).filter((f) => f === 'deploy.yml');
+  assert.deepEqual(deployWorkflows, ['deploy.yml']);
   for (const path of ['.openai/hosting.json', 'public/_redirects', '_redirects', 'wrangler.toml', 'netlify.toml']) {
-    assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), false, `${path} requires explicit approval`);
+    assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), false, `${path} conflicts with the GitHub Pages deploy`);
   }
 });
 
