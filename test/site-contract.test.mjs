@@ -343,6 +343,7 @@ test('portfolio stays static and deploys only through GitHub Pages', () => {
   const readme = read('README.md');
 
   assert.match(astroConfig, /output:\s*'static'/);
+  assert.match(astroConfig, /site:\s*'https:\/\/raulcardenasmontoya\.dev'/);
   assert.match(workflow, /npm run validate/);
   assert.doesNotMatch(workflow, /deploy|wrangler|cloudflare/i);
   assert.doesNotMatch(deploy, /wrangler|cloudflare|netlify/i);
