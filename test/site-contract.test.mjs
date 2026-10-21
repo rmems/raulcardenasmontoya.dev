@@ -124,7 +124,7 @@ test('identity carries the AI Engineer title, every profile link, and Person JSO
   assert.match(identity, /cratesio: 'https:\/\/crates\.io\/users\/rmems'/);
   assert.match(identity, /cursor: 'https:\/\/cursor\.com\/@hunkvsleon'/);
   assert.match(identity, /instagram: 'https:\/\/instagram\.com\/raccooncity_resident'/);
-  assert.match(identity, /threads: 'https:\/\/threads\.com\/raccooncity_resident'/);
+  assert.match(identity, /threads: 'https:\/\/threads\.com\/@raccooncity_resident'/);
   assert.match(layout, /'@type': 'Person'/);
   assert.match(layout, /sameAs: Object\.values\(site\.social\)/);
   assert.match(layout, /application\/ld\+json/);
