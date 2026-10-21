@@ -4,7 +4,7 @@ Guidance for coding agents (Amp, Codex, Cursor, Claude Code, and others) working
 
 ## Purpose
 
-`raulcardenasmontoya.dev` is a static Astro + TypeScript portfolio for AI/ML systems engineering (see
+`raulcardenasmontoya.me` is a static Astro + TypeScript portfolio for AI/ML systems engineering (see
 `README.md`). It includes live WASM demos backed by a small Rust crate
 (`crates/neuromorphic-adapter`). It deploys to GitHub Pages through `.github/workflows/deploy.yml`.
 

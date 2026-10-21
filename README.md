@@ -1,6 +1,6 @@
 # shipoftheseus.dev
 
-A static Astro + TypeScript portfolio for AI/ML systems engineering. It deploys to GitHub Pages at `raulcardenasmontoya.dev` from `main`.
+A static Astro + TypeScript portfolio for AI/ML systems engineering. It deploys to GitHub Pages at `raulcardenasmontoya.me` from `main`.
 
 ## Local development
 
@@ -50,4 +50,4 @@ Codecov/Qlty setup, and fork-PR behavior.
 
 `.github/workflows/deploy.yml` runs on every push to `main`: `npm ci`, `npm run validate`, `npm run build` (Astro, output `dist`), then `actions/upload-pages-artifact` and `actions/deploy-pages` (`pages: write`, `id-token: write`, `github-pages` environment). `npm run build` needs only Node 20.19+ or 22.12+ because the browser WASM packages are committed under `public/wasm/`; the Rust toolchain is installed only for `validate`.
 
-One-time repository settings: Settings → Pages → Source: **GitHub Actions**; Settings → Pages → Custom domain: `raulcardenasmontoya.dev` (save it; `public/CNAME` alone does not set this for Actions publishing); once DNS resolves and the certificate is issued, turn on **Enforce HTTPS**. `public/CNAME` keeps the custom domain pinned in the built site. Manual runs only deploy from `main`.
+One-time repository settings: Settings → Pages → Source: **GitHub Actions**; Settings → Pages → Custom domain: `raulcardenasmontoya.me` (save it; `public/CNAME` alone does not set this for Actions publishing); once DNS resolves and the certificate is issued, turn on **Enforce HTTPS**. `public/CNAME` keeps the custom domain pinned in the built site. Manual runs only deploy from `main`.
