@@ -36,7 +36,7 @@ steps need `CODECOV_TOKEN`, `QLTY_COVERAGE_TOKEN` or OIDC and are not local gate
 
 ## Invariants and non-goals
 
-- The site deploys to GitHub Pages; `raulcardenasmontoya.dev` is canonical. Never touch `hooks.shipoftheseus.dev`.
+- The site deploys to GitHub Pages; `raulcardenasmontoya.me` is canonical. Never touch `hooks.shipoftheseus.dev`.
 - Do not invent benchmark numbers; leave the native-evidence catalog empty without a measured capture (`AGENTS.md`, `CONTENT.md`).
 - Do not hand-edit `public/wasm/**`; `test:wasm-web-pkg` fails on drift from the locked toolchain.
 - The browser dependency policy in `scripts/verify-browser-dependencies.mjs` is enforced by `validate:rust`; do not loosen it to pass.

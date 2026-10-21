@@ -341,7 +341,7 @@ test('sitemap, robots.txt and a 1200x630 social card are wired up', () => {
   assert.equal(png.readUInt32BE(16), 1200);
   assert.equal(png.readUInt32BE(20), 630);
   assert.match(read('astro.config.mjs'), /sitemap\(\)/);
-  assert.match(read('public/robots.txt'), /^Sitemap: https:\/\/raulcardenasmontoya\.dev\/sitemap-index\.xml$/m);
+  assert.match(read('public/robots.txt'), /^Sitemap: https:\/\/raulcardenasmontoya\.me\/sitemap-index\.xml$/m);
   assert.match(read('src/layouts/BaseLayout.astro'), /og:image:width" content="1200"/);
 });
 
@@ -352,7 +352,7 @@ test('portfolio stays static and deploys only through GitHub Pages', () => {
   const readme = read('README.md');
 
   assert.match(astroConfig, /output:\s*'static'/);
-  assert.match(astroConfig, /site:\s*'https:\/\/raulcardenasmontoya\.dev'/);
+  assert.match(astroConfig, /site:\s*'https:\/\/raulcardenasmontoya\.me'/);
   assert.match(workflow, /npm run validate/);
   assert.doesNotMatch(workflow, /deploy|wrangler|cloudflare/i);
   assert.doesNotMatch(deploy, /wrangler|cloudflare|netlify/i);
@@ -365,9 +365,9 @@ test('portfolio stays static and deploys only through GitHub Pages', () => {
   assert.match(deploy, /pages: write/);
   assert.match(deploy, /id-token: write/);
   assert.match(deploy, /name: github-pages/);
-  assert.equal(read('public/CNAME').trim(), 'raulcardenasmontoya.dev');
+  assert.equal(read('public/CNAME').trim(), 'raulcardenasmontoya.me');
   assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/);
-  assert.match(readme, /Custom domain: `raulcardenasmontoya\.dev`/);
+  assert.match(readme, /Custom domain: `raulcardenasmontoya\.me`/);
   const deployWorkflows = readdirSync(new URL('../.github/workflows/', import.meta.url)).filter((f) => f === 'deploy.yml');
   assert.deepEqual(deployWorkflows, ['deploy.yml']);
   for (const path of ['.openai/hosting.json', 'public/_redirects', '_redirects', 'wrangler.toml', 'netlify.toml']) {

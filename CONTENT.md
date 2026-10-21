@@ -24,6 +24,6 @@ Recorded `corpus-ipc` protocol fixtures for `/protocol/` live in `public/protoco
 
 ## Domain safety
 
-The canonical domain is `raulcardenasmontoya.dev` (registrar and DNS at Namecheap, served by GitHub Pages). `shipoftheseus.dev` stays on Cloudflare and may 301 to it from the apex and `www` only. `hooks.shipoftheseus.dev` is explicitly out of scope: it remains the active PR-babysit GitHub-webhook Cloudflare Tunnel endpoint and must not be redirected, deleted, or otherwise changed for this site.
+The canonical domain is `raulcardenasmontoya.me` (registrar and DNS at Namecheap, served by GitHub Pages). `shipoftheseus.dev` stays on Cloudflare and may 301 to it from the apex and `www` only. `hooks.shipoftheseus.dev` is explicitly out of scope: it remains the active PR-babysit GitHub-webhook Cloudflare Tunnel endpoint and must not be redirected, deleted, or otherwise changed for this site.
 
 DNS and any `shipoftheseus.dev` redirect live outside this repository (Namecheap and Cloudflare).

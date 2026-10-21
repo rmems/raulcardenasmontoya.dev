@@ -30,7 +30,7 @@ const ring = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"
     <text x="530" y="285" font-size="68" font-weight="700">Raul Cardenas</text>
     <text x="530" y="365" font-size="68" font-weight="700">Montoya</text>
     <text x="532" y="430" font-size="34" fill="#d98f62">AI/ML systems engineer</text>
-    <text x="532" y="490" font-size="26" fill="#a9a79c">raulcardenasmontoya.dev</text>
+    <text x="532" y="490" font-size="26" fill="#a9a79c">raulcardenasmontoya.me</text>
   </g>
 </svg>`;
 
