@@ -50,6 +50,4 @@ Codecov/Qlty setup, and fork-PR behavior.
 
 `.github/workflows/deploy.yml` runs on every push to `main`: `npm ci`, `npm run validate`, `npm run build` (Astro, output `dist`), then `actions/upload-pages-artifact` and `actions/deploy-pages` (`pages: write`, `id-token: write`, `github-pages` environment). `npm run build` needs only Node 20.19+ or 22.12+ because the browser WASM packages are committed under `public/wasm/`; the Rust toolchain is installed only for `validate`.
 
-One-time repository settings: Settings → Pages → Source: **GitHub Actions**; once DNS resolves and the certificate is issued, turn on **Enforce HTTPS**. `public/CNAME` pins the custom domain `raulcardenasmontoya.dev`.
-
-Do **not** modify `hooks.shipoftheseus.dev`: it is a separately active GitHub-webhook Cloudflare Tunnel endpoint, outside this portfolio's scope. No redirect or other hosting configuration is committed.
+One-time repository settings: Settings → Pages → Source: **GitHub Actions**; Settings → Pages → Custom domain: `raulcardenasmontoya.dev` (save it; `public/CNAME` alone does not set this for Actions publishing); once DNS resolves and the certificate is issued, turn on **Enforce HTTPS**. `public/CNAME` keeps the custom domain pinned in the built site. Manual runs only deploy from `main`.

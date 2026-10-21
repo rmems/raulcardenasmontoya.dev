@@ -356,11 +356,12 @@ test('portfolio stays static and deploys only through GitHub Pages', () => {
   assert.match(deploy, /id-token: write/);
   assert.match(deploy, /name: github-pages/);
   assert.equal(read('public/CNAME').trim(), 'raulcardenasmontoya.dev');
-  assert.match(readme, /hooks\.shipoftheseus\.dev/);
-  const deployWorkflows = readdirSync(new URL('../.github/workflows/', import.meta.url)).filter((f) => /deploy/i.test(f));
+  assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/);
+  assert.match(readme, /Custom domain: `raulcardenasmontoya\.dev`/);
+  const deployWorkflows = readdirSync(new URL('../.github/workflows/', import.meta.url)).filter((f) => f === 'deploy.yml');
   assert.deepEqual(deployWorkflows, ['deploy.yml']);
   for (const path of ['.openai/hosting.json', 'public/_redirects', '_redirects', 'wrangler.toml', 'netlify.toml']) {
-    assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), false, `${path} requires explicit approval`);
+    assert.equal(existsSync(new URL(`../${path}`, import.meta.url)), false, `${path} conflicts with the GitHub Pages deploy`);
   }
 });
 
