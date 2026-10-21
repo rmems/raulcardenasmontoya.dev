@@ -12,7 +12,7 @@ export const site = {
     cratesio: 'https://crates.io/users/rmems',
     cursor: 'https://cursor.com/@hunkvsleon',
     instagram: 'https://instagram.com/raccooncity_resident',
-    threads: 'https://threads.com/raccooncity_resident',
+    threads: 'https://threads.com/@raccooncity_resident',
   },
   resumePath: '/resume.pdf',
 } as const;
