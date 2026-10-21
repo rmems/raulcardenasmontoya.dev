@@ -4,10 +4,9 @@ Guidance for coding agents (Amp, Codex, Cursor, Claude Code, and others) working
 
 ## Purpose
 
-`shipoftheseus.dev` is a static Astro + TypeScript portfolio for AI/ML systems engineering (see
+`raulcardenasmontoya.dev` is a static Astro + TypeScript portfolio for AI/ML systems engineering (see
 `README.md`). It includes live WASM demos backed by a small Rust crate
-(`crates/neuromorphic-adapter`). It is local-only until explicitly approved for deployment, and the
-repo has no deployment workflow.
+(`crates/neuromorphic-adapter`). It deploys to GitHub Pages through `.github/workflows/deploy.yml`.
 
 ## Layout
 
