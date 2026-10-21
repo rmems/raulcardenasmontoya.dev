@@ -12,7 +12,7 @@
 //! legitimately changes, bump `revision` and the file names, then regenerate:
 //!
 //! ```text
-//! cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features nir --test nir_example regenerate_nir_example -- --ignored --exact
+//! cargo +1.99.0 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features nir --test nir_example regenerate_nir_example -- --ignored --exact
 //! ```
 
 use neuromorphic_adapter::nir::{
@@ -132,6 +132,8 @@ fn example_envelope() -> NirEnvelope {
             summary: "Hand-authored example: three inputs, an affine projection into four LIF neurons, and a linear readout into two leaky integrators. Parameters are illustrative constants; nothing is trained or measured.".to_owned(),
             origin: NirAssetOrigin::HandAuthoredExample,
             generator: "crates/neuromorphic-adapter/tests/nir_example.rs".to_owned(),
+            // Recorded in the committed revision-1 files as they were generated (Rust 1.98.1).
+            // Changing it changes their bytes, so it moves only with a new `revision`.
             regenerate: "cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features nir --test nir_example regenerate_nir_example -- --ignored --exact".to_owned(),
         },
         example_graph(),

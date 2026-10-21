@@ -79,7 +79,7 @@ if (run(wasmBindgen, ['--version']).trim() !== 'wasm-bindgen 0.2.126') {
 
 async function buildWasm(pkg) {
   run(cargo, [
-    '+1.98.1',
+    '+1.99.0',
     'build',
     '--manifest-path',
     manifest,

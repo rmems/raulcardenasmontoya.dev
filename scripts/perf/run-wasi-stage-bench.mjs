@@ -3,8 +3,8 @@
 // executed by V8. This is Node's V8 (see `process.versions.v8`), not Chrome's:
 // use it for per-stage costs under WASM, and the browser harness for Chrome.
 //
-//   rustup target add wasm32-wasip1 --toolchain 1.98.1
-//   cargo +1.98.1 build --release --locked --target wasm32-wasip1 \
+//   rustup target add wasm32-wasip1 --toolchain 1.99.0
+//   cargo +1.99.0 build --release --locked --target wasm32-wasip1 \
 //     --manifest-path crates/neuromorphic-adapter/Cargo.toml --example stage_bench
 //   node scripts/perf/run-wasi-stage-bench.mjs <path to stage_bench.wasm> [--json] [--quick]
 //

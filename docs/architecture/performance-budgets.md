@@ -534,6 +534,12 @@ Times are mean / p95 / max in ms, quantized at 0.1 ms.
 | `telemetry-view.*.js` + `demo-telemetry.*.js` (#48 panel) | 16,856 | 7,175 | 6,528 | only when a reader opens the panel |
 | **total, panel opened** | 1,041,175 | 292,090 | 241,781 | |
 
+Both payload tables were measured with the Rust 1.98.1 package. RM-2057 later
+rebuilt the default package with Rust 1.99.0, and its `.wasm` is now 187,612
+bytes, 1,704 fewer. Its glue is unchanged. See the size table in
+[browser-runtime.md](browser-runtime.md#browser-build-profiles). The rows above
+were not re-measured.
+
 Against a build of the #50 head (`c7ff9e5`, since restacked as `f5677b5` with
 an identical tree) on the same machine, the hero changes the homepage as
 follows. The island entry grows by 350 bytes (124 brotli). The HTML grows from
@@ -668,8 +674,8 @@ npm ci
 npm run perf:stages            # add `-- --json` for JSON, `-- --quick` for a smoke run
 
 # 2. The same harness as WASM, executed by Node's V8
-rustup target add wasm32-wasip1 --toolchain 1.98.1
-cargo +1.98.1 build --release --locked --target wasm32-wasip1 \
+rustup target add wasm32-wasip1 --toolchain 1.99.0
+cargo +1.99.0 build --release --locked --target wasm32-wasip1 \
   --manifest-path crates/neuromorphic-adapter/Cargo.toml --example stage_bench
 node scripts/perf/run-wasi-stage-bench.mjs \
   crates/neuromorphic-adapter/target/wasm32-wasip1/release/examples/stage_bench.wasm

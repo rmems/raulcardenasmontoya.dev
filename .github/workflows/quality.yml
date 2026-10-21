@@ -24,9 +24,9 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Use Rust 1.98.1 with the browser target
-        # 1.98.1 action revision
-        uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e
+      - name: Use Rust 1.99.0 with the browser target
+        # 1.99.0 action revision
+        uses: dtolnay/rust-toolchain@fb523f40495206854c36b250850817ae0f83e3d1
         with:
           targets: wasm32-unknown-unknown
           components: rustfmt, clippy
@@ -76,8 +76,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Use Rust 1.98.1
-        uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e
+      - name: Use Rust 1.99.0
+        uses: dtolnay/rust-toolchain@fb523f40495206854c36b250850817ae0f83e3d1
         with:
           components: llvm-tools-preview
 
@@ -92,6 +92,7 @@ jobs:
           cargo llvm-cov \
             --manifest-path crates/neuromorphic-adapter/Cargo.toml \
             --all-targets \
+            --all-features \
             --locked \
             --lcov \
             --output-path coverage/rust.lcov

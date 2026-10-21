@@ -48,5 +48,5 @@ steps need `CODECOV_TOKEN`, `QLTY_COVERAGE_TOKEN` or OIDC and are not local gate
 - `package.json` is `private` and has no `files` list, and the crate is not published, so adding `CLAUDE.md` needs no manifest change. Never run publish or deploy commands.
 - `.gitignore` lists `/.agents/`, yet `.agents/setup` and `.cursor/environment.json` are tracked. `.claude/` is not gitignored, so do not commit local agent state there.
 - CI installs with `npm ci --ignore-scripts`; `.npmrc` turns off audit, fund and update notices.
-- `npm run validate` needs Rust 1.98.1 with the wasm target plus a Chrome binary, so it is heavy on a small machine.
+- `npm run validate` needs the pinned Rust toolchain (see AGENTS.md) with the wasm target plus a Chrome binary, so it is heavy on a small machine.
 - Edit only what the task needs.

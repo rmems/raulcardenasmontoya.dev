@@ -20,13 +20,13 @@ Qlty does **not** replace ESLint, `astro check`, or Rust fmt/clippy.
 
 CI generates two LCOV files:
 
-1. **Rust** — `cargo llvm-cov --all-targets --locked` on
+1. **Rust** — `cargo llvm-cov --all-targets --all-features --locked` on
    `crates/neuromorphic-adapter` (library, integration tests, WASM target code
-   paths exercised on the host). Local `npm run coverage` adds
-   `--all-features`, so it also covers feature-gated labs code such as `nir`
-   (`src/nir.rs` and its tests). The CI step in `quality.yml` does not pass
-   `--all-features` yet, so CI coverage omits that code until the workflow is
-   updated.
+   paths exercised on the host). `--all-features` turns on every labs feature
+   (`nir`, `protocol` and `plasticity`), so the feature-gated modules
+   (`src/nir.rs`, `src/protocol.rs`, `src/plasticity.rs`) and their tests are
+   covered. CI's "Generate Rust LCOV" step and local `npm run coverage` pass the
+   same flags.
 2. **Node** — `c8` over `node --test test/**/*.test.mjs`, attributing coverage
    to `scripts/**/*.mjs` (verification harnesses).
 
@@ -43,7 +43,8 @@ After `npm run coverage` on Linux with Rust **1.98.1** and `cargo-llvm-cov`:
 - **scripts/** (c8) — about **52%** statement coverage.
 
 Hosted Codecov percentages may differ until the default branch has uploaded at
-least once.
+least once. This baseline predates the move to Rust 1.99.0 (RM-2057) and has not
+been re-measured on the new pin.
 
 ## Exclusions
 
@@ -136,7 +137,7 @@ blockers unless branch protection is changed explicitly.
 | Symptom | Check |
 | --- | --- |
 | Missing Codecov check | `CODECOV_TOKEN` or OIDC; fork PR may skip upload |
-| `cargo llvm-cov` not found | `cargo install cargo-llvm-cov --locked` with Rust 1.98.1 |
+| `cargo llvm-cov` not found | `cargo install cargo-llvm-cov --locked` with Rust 1.99.0 |
 | Empty `coverage/lcov.info` | Run `npm run test:coverage` after `npm ci` |
 | `qlty check` red on PR | Qlty GitHub App findings on the diff (not the Actions upload job) |
 | Quality workflow red | Fix `npm run validate` first; coverage uploads run only after it passes |

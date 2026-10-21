@@ -2,7 +2,7 @@
 //! (GitHub #10 / Linear RM-1646).
 //!
 //! ```text
-//! cargo +1.98.1 run --release --locked \
+//! cargo +1.99.0 run --release --locked \
 //!   --manifest-path crates/neuromorphic-adapter/Cargo.toml --example stage_bench
 //! ```
 //!

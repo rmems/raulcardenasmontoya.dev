@@ -70,7 +70,7 @@ try {
   requireWasmBindgenVersion();
   output = await mkdtemp(join(tmpdir(), 'neuromorphic-adapter-smoke-'));
   const webOutput = join(output, 'web');
-  run('cargo', ['+1.98.1', 'build', '--manifest-path', manifest, '--target', 'wasm32-unknown-unknown', '--release', '--locked']);
+  run('cargo', ['+1.99.0', 'build', '--manifest-path', manifest, '--target', 'wasm32-unknown-unknown', '--release', '--locked']);
   run(wasmBindgen, ['--target', 'nodejs', '--out-dir', output, wasm]);
   run('node', ['--input-type=commonjs', '--eval', [
     "const wasm = require(process.argv[1]);",

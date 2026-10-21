@@ -174,7 +174,7 @@ async function main() {
 
   const failures = [];
   for (const profile of WASM_PROFILES) {
-    const result = spawnSync(cargo, ['+1.98.1', 'metadata', '--manifest-path', manifest, '--locked', '--format-version', '1', '--filter-platform', 'wasm32-unknown-unknown', ...profileFeatureArgs(profile)], {
+    const result = spawnSync(cargo, ['+1.99.0', 'metadata', '--manifest-path', manifest, '--locked', '--format-version', '1', '--filter-platform', 'wasm32-unknown-unknown', ...profileFeatureArgs(profile)], {
       cwd: repository,
       encoding: 'utf8',
     });

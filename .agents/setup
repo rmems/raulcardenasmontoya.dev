@@ -7,7 +7,7 @@
 #
 # Installs only what this repo's CI and manifests need:
 #   - apt: build-essential, pkg-config, curl, ca-certificates
-#   - Rust 1.98.1 (+rustfmt, clippy) target wasm32-unknown-unknown [default]
+#   - Rust 1.99.0 (+rustfmt, clippy) target wasm32-unknown-unknown [default]
 #   - wasm-bindgen-cli 0.2.126 (cargo install --locked)
 #   - npm ci (orb Node, checked against engines)
 #   - cargo fetch --locked (crates/neuromorphic-adapter)
@@ -46,9 +46,9 @@ if ! command -v rustup >/dev/null 2>&1; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
     sh -s -- -y --default-toolchain none --profile minimal
 fi
-# crates/neuromorphic-adapter/rust-toolchain.toml + quality.yml: 1.98.1, wasm32-unknown-unknown, rustfmt, clippy.
-rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy --target wasm32-unknown-unknown
-rustup default 1.98.1
+# crates/neuromorphic-adapter/rust-toolchain.toml + quality.yml: 1.99.0, wasm32-unknown-unknown, rustfmt, clippy.
+rustup toolchain install 1.99.0 --profile minimal --component rustfmt --component clippy --target wasm32-unknown-unknown
+rustup default 1.99.0
 
 # quality.yml installs wasm-bindgen-cli 0.2.126 for the wasm adapter checks.
 if ! wasm-bindgen --version 2>/dev/null | grep -q '0\.2\.126'; then

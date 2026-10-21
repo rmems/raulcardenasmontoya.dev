@@ -750,8 +750,12 @@ network owned by `synaptic-wiring` and `neuromod`.
   `asset.revision` and the file names if the graph changes) with:
 
   ```text
-  cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features nir --test nir_example regenerate_nir_example -- --ignored --exact
+  cargo +1.99.0 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features nir --test nir_example regenerate_nir_example -- --ignored --exact
   ```
+
+  The revision-1 files keep the `cargo +1.98.1 …` command they were generated
+  with in `asset.regenerate`. That string is part of their bytes, so it changes
+  only with a new revision.
 
   `.gitattributes` keeps both files LF on every checkout because they are
   compared byte for byte.
@@ -877,8 +881,12 @@ Reward / Penalty button → LabObservation (limbic_critic::Environment)
   correctly on the build target. Regenerate with:
 
   ```text
-  cargo +1.98.1 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features plasticity --test plasticity_session regenerate_plasticity_golden -- --ignored --exact
+  cargo +1.99.0 test --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --features plasticity --test plasticity_session regenerate_plasticity_golden -- --ignored --exact
   ```
+
+  The v1 golden keeps the `cargo +1.98.1 …` command it was generated with in
+  `regenerate`. That string is part of its bytes, so it changes only with a new
+  golden version.
 
   `.gitattributes` keeps the golden LF on every checkout.
 - **Static first.** Without JavaScript or WebAssembly the page shows what the
@@ -955,6 +963,25 @@ toolchain (`gzip -9 -c <file> | wc -c`, GNU gzip 1.14); on that host the
 `nir` + `protocol` row above is the committed #21 package (966,603 B,
 258,008 B gzip), so `plasticity` adds 17,515 B (7,611 B gzip) of WASM.
 
+RM-2057 replaces both committed `.wasm` files with Rust 1.99.0 builds. These
+were measured on 2026-10-09 on the same Windows 11 host, with rustc 1.99.0
+(b940084d7 2026-09-28), wasm-bindgen 0.2.126 and `gzip -9 -c <file> | wc -c`
+(GNU gzip 1.14):
+
+| Package (Rust 1.99.0) | `.wasm` raw | `.wasm` gzip | `.js` glue raw | `.js` glue gzip |
+| --- | ---: | ---: | ---: | ---: |
+| `default` (`neuromorphic-adapter/`) | 187,612 B | 66,923 B | 16,606 B | 3,169 B |
+| `labs`, `nir` + `protocol` + `plasticity` (`neuromorphic-adapter-labs/`) | 982,555 B | 264,878 B | 41,037 B | 6,310 B |
+
+The `.js`, `.d.ts` and `_bg.wasm.d.ts` files of both packages are
+byte-identical to the 1.98.1 packages; only the `.wasm` changed. Measured the
+same way on this host, the previously committed 1.98.1 `.wasm` files gzip to
+67,172 B (`default`) and 265,619 B (`labs`). So 1.99.0 makes the `default`
+`.wasm` 1,704 B smaller (249 B gzip) and the `labs` `.wasm` 1,563 B smaller
+(741 B gzip). The default `.js` glue is the same file as before, so the gap
+between 3,169 B here and 3,152 B in the 1.98.1 table comes from the measurement
+setup, not the file.
+
 - `npm run build:wasm-web` builds every profile. Each profile has its own cargo
   target directory (`target/`, `target/labs/`), so the outputs never overwrite
   each other. `npm run test:wasm-web-pkg` regenerates every profile and fails
@@ -1009,6 +1036,27 @@ cargo +1.98.1 check --target wasm32-unknown-unknown <selected feature suffix>
 
 This completed audit did **not** use `--locked`. All future CI checks and
 re-audits must use `--locked` so their dependency resolutions are reproducible.
+
+### Toolchain re-check on Rust 1.99.0 (2026-10-09)
+
+The rows above were audited on Rust 1.98.1 and are kept as measured. RM-2057
+moved the adapter's toolchain pin to Rust **1.99.0** (`rust-toolchain.toml`,
+`rust-version`, the `cargo +1.99.0` calls in `package.json` and `scripts/`, and
+the Quality workflow). On 2026-10-09 both browser profiles' locked graphs were
+re-checked with rustc 1.99.0 (b940084d7 2026-09-28) on an x86_64 Windows 11
+host:
+
+```text
+cargo +1.99.0 check --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --target wasm32-unknown-unknown
+cargo +1.99.0 check --manifest-path crates/neuromorphic-adapter/Cargo.toml --locked --target wasm32-unknown-unknown --all-features
+```
+
+Result: **Pass** for both. The default profile covers `kinetic-signals`,
+`axon-encoder`, `neuromod`, `synaptic-wiring` and `corpus-ipc`. `--all-features`
+(the labs profile: `nir`, `protocol` and `plasticity`) adds `nir-rs`,
+`plasticity-lab` and `limbic-critic`. Both use the revisions in `Cargo.lock` and
+the adapter's own feature selection, not each row's selected suffix.
+`myelin-accelerator`, which is in neither graph, was not re-audited on 1.99.0.
 
 Merging this ADR and RM-1639 closes only the architecture decision. The exact
 upstream browser-entropy fixes above unblock full RM-1640/GitHub #4 dispatch,
