@@ -1,0 +1,75 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        # v4.2.2
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      # `npm run validate` also runs the Rust/WASM adapter checks and the headless
+      # browser checks, so the same toolchain as the Quality workflow is required.
+      # `npm run build` alone needs only Node: the browser WASM packages are committed
+      # under public/wasm/.
+      - name: Use Rust 1.99.0 with the browser target
+        # 1.99.0 action revision
+        uses: dtolnay/rust-toolchain@fb523f40495206854c36b250850817ae0f83e3d1
+        with:
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - name: Use Node.js
+        # v4.4.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.12.0
+          cache: npm
+      - name: Install pinned wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - name: Provision stable Chrome for browser smoke coverage
+        id: chrome
+        # v1.7.3
+        uses: browser-actions/setup-chrome@c785b87e244131f27c9f19c1a33e2ead956ab7ce
+        with:
+          chrome-version: stable
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Validate site
+        run: WASM_BINDGEN_BIN="$(command -v wasm-bindgen)" BROWSER_BIN="${{ steps.chrome.outputs.chrome-path }}" npm run validate
+      - name: Build site
+        run: npm run build
+      - name: Upload Pages artifact
+        # v5.0.0
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        # v5.0.1
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
