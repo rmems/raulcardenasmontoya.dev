@@ -115,6 +115,30 @@ test('public identity links use the verified profile destinations', () => {
   assert.match(identity, /huggingface: 'https:\/\/huggingface\.co\/rmems'/);
 });
 
+test('identity carries the AI Engineer title, every profile link, and Person JSON-LD', () => {
+  const identity = read('src/data/site.ts');
+  const layout = read('src/layouts/BaseLayout.astro');
+
+  assert.match(identity, /title: 'AI Engineer'/);
+  assert.match(identity, /x: 'https:\/\/x\.com\/KeepOnSpiking'/);
+  assert.match(identity, /cratesio: 'https:\/\/crates\.io\/users\/rmems'/);
+  assert.match(identity, /cursor: 'https:\/\/cursor\.com\/@hunkvsleon'/);
+  assert.match(identity, /instagram: 'https:\/\/instagram\.com\/raccooncity_resident'/);
+  assert.match(identity, /threads: 'https:\/\/threads\.com\/raccooncity_resident'/);
+  assert.match(layout, /'@type': 'Person'/);
+  assert.match(layout, /sameAs: Object\.values\(site\.social\)/);
+  assert.match(layout, /application\/ld\+json/);
+  assert.match(layout, /`\$\{site\.fullName\} — \$\{site\.title\}`/);
+});
+
+// RM-2266: no null placeholders. `email` and `resumePath` still wait on a public
+// address and a résumé PDF from the owner; remove them from this list once set.
+test('site.ts has no null placeholders beyond the pending owner inputs', () => {
+  const pending = new Set(['email', 'resumePath']);
+  const nulls = [...read('src/data/site.ts').matchAll(/^\s*(\w+):\s*null,/gm)].map((m) => m[1]);
+  assert.deepEqual(nulls.filter((key) => !pending.has(key)), []);
+});
+
 test('the about page includes a local, accessible portrait', () => {
   assert.equal(existsSync(new URL('../public/assets/raul-cardenas-montoya.jpg', import.meta.url)), true);
   assert.match(read('src/pages/about.astro'), /raul-cardenas-montoya\.jpg/);

@@ -4,7 +4,19 @@ import SiteHeader from '../components/SiteHeader.astro';
 import { site } from '../data/site';
 interface Props { title?: string; description?: string; }
 const { title, description = site.description } = Astro.props;
-const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.title}`;
+const brandTitle = `${site.fullName} — ${site.title}`;
+const pageTitle = title ? `${brandTitle} · ${title}` : brandTitle;
+const metaDescription = description.startsWith(site.fullName) ? description : `${site.fullName} — ${site.title}. ${description}`;
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.fullName,
+  jobTitle: site.title,
+  url: new URL('/', Astro.site).href,
+  description: site.description,
+  sameAs: Object.values(site.social),
+  ...(site.email ? { email: site.email } : {}),
+};
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL('/assets/social-card.png', Astro.site);
 ---
@@ -13,11 +25,11 @@ const socialImage = new URL('/assets/social-card.png', Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <meta name="theme-color" content="#f1f0e9" />
     <meta name="generator" content={Astro.generator} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImage} />
@@ -26,10 +38,11 @@ const socialImage = new URL('/assets/social-card.png', Astro.site);
     <meta property="og:image:alt" content="Ship of Theseus — AI/ML systems engineering" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={metaDescription} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
     <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
