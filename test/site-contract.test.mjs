@@ -131,12 +131,12 @@ test('identity carries the AI Engineer title, every profile link, and Person JSO
   assert.match(layout, /`\$\{site\.fullName\} — \$\{site\.title\}`/);
 });
 
-// RM-2266: no null placeholders. `email` and `resumePath` still wait on a public
-// address and a résumé PDF from the owner; remove them from this list once set.
-test('site.ts has no null placeholders beyond the pending owner inputs', () => {
-  const pending = new Set(['email', 'resumePath']);
-  const nulls = [...read('src/data/site.ts').matchAll(/^\s*(\w+):\s*null,/gm)].map((m) => m[1]);
-  assert.deepEqual(nulls.filter((key) => !pending.has(key)), []);
+test('site.ts has no null placeholders and the résumé PDF ships', () => {
+  const site = read('src/data/site.ts');
+  assert.deepEqual([...site.matchAll(/^\s*(\w+):\s*null,/gm)].map((m) => m[1]), []);
+  assert.match(site, /email: '[^'@\s]+@[^'@\s]+\.[a-z]+'/);
+  assert.match(site, /resumePath: '\/resume\.pdf'/);
+  assert.equal(existsSync(new URL('../public/resume.pdf', import.meta.url)), true);
 });
 
 test('the about page includes a local, accessible portrait', () => {
