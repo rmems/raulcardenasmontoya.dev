@@ -91,12 +91,12 @@ function readPalette(): Palette {
   const style = globalThis.getComputedStyle?.(document.documentElement);
   const token = (name: string, fallback: string) => style?.getPropertyValue(name).trim() || fallback;
   return {
-    background: token('--paper', '#f1f0e9'),
-    input: token('--muted', '#62635c'),
-    neuron: token('--signal', '#a94422'),
-    rule: token('--line', '#c5c4b9'),
-    dopamine: token('--signal', '#a94422'),
-    norepinephrine: token('--ink', '#171816'),
+    background: token('--surface', '#ffffff'),
+    input: token('--muted', '#5b6474'),
+    neuron: token('--spike', '#f43f5e'),
+    rule: token('--line', '#e3e7ed'),
+    dopamine: token('--accent', '#4f46e5'),
+    norepinephrine: token('--secondary', '#0ea5a4'),
   };
 }
 
