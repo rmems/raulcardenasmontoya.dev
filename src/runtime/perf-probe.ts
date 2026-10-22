@@ -38,7 +38,13 @@ export type PerfStage =
   /** Main-thread time spent drawing one frame. */
   | 'frame-work'
   /** Interval between animation-frame callbacks. */
-  | 'frame-interval';
+  | 'frame-interval'
+  /**
+   * Largest per-frame change in a node's displayed activation, in thousandths
+   * (not milliseconds): how big the visible colour jump is from one frame to
+   * the next.
+   */
+  | 'node-step';
 
 export interface PerfStageSummary {
   /** Lifetime samples. */

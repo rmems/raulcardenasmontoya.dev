@@ -19,7 +19,7 @@
 }
 
 .demo-telemetry-summary:focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -178,8 +178,8 @@
 }
 
 .demo-telemetry-chip[data-spiked='true'] span {
-  border-color: var(--signal);
-  box-shadow: inset 0 -3px 0 var(--signal);
+  border-color: var(--accent);
+  box-shadow: inset 0 -3px 0 var(--accent);
 }
 
 .demo-telemetry-chip input:checked + span {
@@ -189,7 +189,7 @@
 }
 
 .demo-telemetry-chip input:focus-visible + span {
-  outline: 3px solid var(--signal);
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 

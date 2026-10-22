@@ -62,7 +62,7 @@
 
 .hero-mesh-static { display: block; }
 .hero-mesh-edges { fill: none; stroke-width: 1; }
-.hero-mesh-nodes { fill: none; stroke-linecap: square; }
+.hero-mesh-nodes { fill: none; stroke-linecap: round; }
 .hero-mesh-edges line,
 .hero-mesh-nodes { vector-effect: non-scaling-stroke; }
 
@@ -135,7 +135,7 @@
   display: inline;
 }
 
-.live-hero[data-demo-input-source='pointer'] .hero-mesh-input { color: var(--signal); }
+.live-hero[data-demo-input-source='pointer'] .hero-mesh-input { color: var(--accent); }
 
 /* The origin label sits alone on its line: its text changes with the
    runtime, and nothing after it on the line could move. */
@@ -188,7 +188,7 @@
   font-weight: 650;
 }
 
-.crate-trail a:hover { color: var(--signal); }
+.crate-trail a:hover { color: var(--accent); }
 
 .hero-mesh-links {
   display: flex;
@@ -202,7 +202,7 @@
   font-weight: 650;
 }
 
-.hero-mesh-links a:hover { color: var(--signal); }
+.hero-mesh-links a:hover { color: var(--accent); }
 
 /* How the live view is built, below the first screen. */
 .hero-runtime {
@@ -218,10 +218,10 @@
 
 .hero-runtime h2 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(2.3rem, 3.8vw, 3.6rem);
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 0.98;
 }
 
@@ -258,7 +258,7 @@
     padding-top: 3.5rem;
   }
 
-  .hero.hero-live h1 { font-size: min(17vw, 5rem); }
+  .hero.hero-live h1 { font-size: min(11vw, 3.4rem); }
 
   .hero-mesh { grid-template-columns: minmax(0, 1fr); }
   .hero-mesh-stage { aspect-ratio: 4 / 3; }
@@ -266,5 +266,5 @@
 }
 
 @media (max-width: 360px) {
-  .hero.hero-live h1 { font-size: min(18vw, 3.7rem); }
+  .hero.hero-live h1 { font-size: min(12vw, 2.8rem); }
 }

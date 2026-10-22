@@ -27,10 +27,10 @@
 
 .lab-entry h2 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(min(2rem, 10vw), 4vw, 3rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 1;
 }
 

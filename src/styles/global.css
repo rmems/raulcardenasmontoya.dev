@@ -1,15 +1,21 @@
 :root {
-  --ink: #171816;
-  --paper: #f1f0e9;
-  --paper-deep: #e5e3d9;
-  --muted: #62635c;
-  --line: #c5c4b9;
-  --line-strong: #888981;
-  --signal: #a94422;
-  --signal-soft: #e8cabc;
+  --ink: #0f172a;
+  --paper: #f7f8fa;
+  --surface: #ffffff;
+  --paper-deep: #eef1f5;
+  --muted: #5b6474;
+  --line: #e3e7ed;
+  --line-strong: #b8c0cc;
+  /* Text-safe accent (6.0:1 on --paper). Secondary and spike are for
+     graphics only: they are below 4.5:1 as text. */
+  --accent: #4f46e5;
+  --accent-soft: #e0e7ff;
+  --secondary: #0ea5a4;
+  --spike: #f43f5e;
   --max: 1240px;
   --gutter: clamp(1.1rem, 4vw, 3rem);
   --serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --display: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
   color-scheme: light;
@@ -37,16 +43,8 @@ body {
   overflow-wrap: break-word;
 }
 
-body::before {
-  position: fixed;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-  content: '';
-  background: linear-gradient(to right, transparent calc(100% - 1px), rgb(23 24 22 / 5%) 1px) 0 0 / 25% 100%;
-}
 
-::selection { color: var(--paper); background: var(--signal); }
+::selection { color: var(--paper); background: var(--accent); }
 
 a {
   color: inherit;
@@ -54,18 +52,18 @@ a {
   text-underline-offset: 0.22em;
 }
 
-a:hover { color: var(--signal); }
+a:hover { color: var(--accent); }
 
 a:focus-visible,
 button:focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 
 code {
   padding: 0.15em 0.35em;
   border-radius: 3px;
-  background: rgb(23 24 22 / 7%);
+  background: rgb(15 23 42 / 7%);
   font-family: var(--mono);
   font-size: 0.85em;
 }
@@ -109,17 +107,33 @@ code {
   text-decoration: none;
 }
 
-.signal-mark {
-  height: 18px;
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
+.monogram {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  color: var(--surface);
+  background: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
-.signal-mark span { width: 4px; display: block; background: var(--signal); }
-.signal-mark span:nth-child(1) { height: 8px; }
-.signal-mark span:nth-child(2) { height: 17px; }
-.signal-mark span:nth-child(3) { height: 12px; }
+.monogram::after {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  background: var(--spike);
+  content: '';
+}
 
 .primary-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem clamp(0.9rem, 2.5vw, 1.8rem); }
 
@@ -141,7 +155,7 @@ code {
   left: 0;
   height: 2px;
   content: '';
-  background: var(--signal);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 180ms ease;
@@ -153,7 +167,7 @@ code {
   transform-origin: left;
 }
 
-.primary-nav a[aria-current='page'] { color: var(--signal); }
+.primary-nav a[aria-current='page'] { color: var(--accent); }
 
 .header-profile {
   justify-self: end;
@@ -175,7 +189,7 @@ code {
 .eyebrow,
 .detail-label {
   margin: 0 0 1.15rem;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.7rem;
   font-weight: 650;
@@ -198,15 +212,15 @@ code {
 .note-article h1 {
   max-width: 1050px;
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(4.2rem, 9.2vw, 9rem);
-  font-weight: 400;
-  letter-spacing: -0.065em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 0.85;
 }
 
 .hero h1 em,
-.page-intro h1 em { color: var(--signal); font-weight: 400; }
+.page-intro h1 em { color: var(--accent); font-family: var(--serif); font-weight: 400; }
 
 .hero-copy {
   max-width: 650px;
@@ -239,8 +253,8 @@ button.button {
 .button[hidden] { display: none; }
 
 .button-primary { color: var(--paper); background: var(--ink); }
-.button-primary:hover { color: var(--paper); border-color: var(--signal); background: var(--signal); }
-.button-secondary:hover { color: var(--paper); background: var(--signal); border-color: var(--signal); }
+.button-primary:hover { color: var(--paper); border-color: var(--accent); background: var(--accent); }
+.button-secondary:hover { color: var(--paper); background: var(--accent); border-color: var(--accent); }
 
 .hero-index {
   display: flex;
@@ -271,10 +285,10 @@ button.button {
 .focus-band h2,
 .work-principle h2 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(2.5rem, 4.4vw, 4.4rem);
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 0.95;
 }
 
@@ -334,13 +348,13 @@ button.button {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--signal);
-  box-shadow: 0 0 0 3px var(--signal-soft);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .project-category {
   margin: 2.8rem 0 0;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   text-transform: uppercase;
@@ -348,10 +362,10 @@ button.button {
 
 .project-card h3 {
   margin: 0.55rem 0 1rem;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.8rem, 3vw, 2.4rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 1;
 }
 
@@ -432,8 +446,8 @@ button.button {
 }
 
 .execution-origin[data-origin='recorded'] {
-  color: var(--signal);
-  border-color: var(--signal);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .execution-origin[data-origin='static'],
@@ -485,10 +499,10 @@ button.button {
 
 .native-evidence-card h3 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 1.1;
 }
 
@@ -512,7 +526,7 @@ button.button {
 
 .native-evidence-provenance dt {
   margin: 0;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 650;
@@ -570,7 +584,7 @@ button.button {
 .native-evidence-traces caption {
   caption-side: top;
   margin-bottom: 0.55rem;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 650;
@@ -632,7 +646,7 @@ button.button {
   border-top: 1px solid var(--ink);
 }
 
-.margin-note { color: var(--signal); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.margin-note { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .prose { max-width: 680px; }
 .prose p { margin: 0 0 1.5rem; font-size: 1.08rem; }
 .full-grid { margin-bottom: 5rem; }
@@ -657,7 +671,7 @@ button.button {
   gap: 1rem;
   padding: 0.9rem 0;
   border-bottom: 1px solid var(--line);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(1.25rem, 2.5vw, 1.8rem);
   line-height: 1.1;
   text-decoration: none;
@@ -677,10 +691,10 @@ button.button {
 .case-study-header h2 {
   max-width: 900px;
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(3rem, 7vw, 6.8rem);
-  font-weight: 400;
-  letter-spacing: -0.055em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 0.9;
 }
 
@@ -691,7 +705,7 @@ button.button {
   margin-top: clamp(3rem, 6vw, 5rem);
 }
 
-.case-study-summary { margin: 0; font-family: var(--serif); font-size: clamp(1.35rem, 2.5vw, 2rem); line-height: 1.3; }
+.case-study-summary { margin: 0; font-family: var(--display); font-size: clamp(1.35rem, 2.5vw, 2rem); line-height: 1.3; }
 .case-study-detail { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 2.5rem; }
 .detail-label { padding-top: 0.8rem; border-top: 1px solid var(--line); }
 .question-list { margin: 0; padding: 0; list-style: none; }
@@ -703,7 +717,7 @@ button.button {
   line-height: 1.5;
 }
 
-.question-list li::before { position: absolute; top: 0.88rem; left: 0; color: var(--signal); content: '↳'; font-family: var(--mono); }
+.question-list li::before { position: absolute; top: 0.88rem; left: 0; color: var(--accent); content: '↳'; font-family: var(--mono); }
 .case-study-technologies { margin-top: 0; }
 .work-principle { max-width: 900px; padding: clamp(4rem, 8vw, 7rem) 0; }
 .work-principle > p:last-child { max-width: 650px; margin: 2rem 0 0; font-size: 1.05rem; }
@@ -720,7 +734,7 @@ button.button {
 }
 
 .note-entry .eyebrow { margin-bottom: 0.6rem; }
-.note-entry h2 { margin: 0; font-family: var(--serif); font-size: 2rem; font-weight: 400; line-height: 1; }
+.note-entry h2 { margin: 0; font-family: var(--display); font-size: 2rem; font-weight: 650; line-height: 1; }
 .note-entry h2 a { text-decoration: none; }
 .note-entry > p { margin: 0; font-size: 0.9rem; }
 .note-article { max-width: 780px; padding: 6rem 0; }

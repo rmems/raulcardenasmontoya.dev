@@ -18,7 +18,9 @@ import type { PerfProbe } from './perf-probe';
 import {
   CAMERA_EXTENT,
   EDGE_OPACITY,
-  INHIBITORY_INK_MIX,
+  EDGE_FIRE_MIX,
+  SPIKE_FLASH_SECONDS,
+  SITE_TOPOLOGY_PALETTE,
   NODE_SIZE_PX,
   edgeStrength,
   edgeWeightExtent,
@@ -71,19 +73,38 @@ class RendererSeamError extends Error {
   }
 }
 
-interface CssPalette {
-  signal: string;
-  muted: string;
-  ink: string;
-}
+type CssPalette = typeof SITE_TOPOLOGY_PALETTE;
 
 function readPalette(): CssPalette {
   const style = globalThis.getComputedStyle?.(document.documentElement);
+  const token = (name: string, fallback: string) => style?.getPropertyValue(name).trim() || fallback;
   return {
-    signal: style?.getPropertyValue('--signal').trim() || '#2f5bd0',
-    muted: style?.getPropertyValue('--muted').trim() || '#8a8578',
-    ink: style?.getPropertyValue('--ink').trim() || '#1c1a14',
+    accent: token('--accent', SITE_TOPOLOGY_PALETTE.accent),
+    secondary: token('--secondary', SITE_TOPOLOGY_PALETTE.secondary),
+    spike: token('--spike', SITE_TOPOLOGY_PALETTE.spike),
+    muted: token('--muted', SITE_TOPOLOGY_PALETTE.muted),
+    line: token('--line', SITE_TOPOLOGY_PALETTE.line),
   };
+}
+
+/** A soft round sprite so `Points` draw as circles with a halo, not squares. */
+function roundNodeSprite(THREE: typeof import('three')): import('three').Texture | null {
+  const canvas = globalThis.document?.createElement('canvas');
+  const context = canvas?.getContext('2d');
+  if (!canvas || !context) {
+    return null;
+  }
+  canvas.width = canvas.height = 64;
+  const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255,255,255,1)');
+  gradient.addColorStop(0.62, 'rgba(255,255,255,1)');
+  gradient.addColorStop(0.72, 'rgba(255,255,255,0.35)');
+  gradient.addColorStop(1, 'rgba(255,255,255,0)');
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 64, 64);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
 }
 
 export interface TopologyRendererSeamOptions {
@@ -207,11 +228,19 @@ export function createTopologyRendererSeam(options: TopologyRendererSeamOptions)
       const world = new THREE.Group();
       scene.add(world);
 
+      const nodeSprite = roundNodeSprite(THREE);
       const nodeMaterial = new THREE.PointsMaterial({
-        size: NODE_SIZE_PX,
+        // The sprite's halo needs room beyond the solid core.
+        size: NODE_SIZE_PX * 1.6,
         vertexColors: true,
         sizeAttenuation: false,
+        map: nodeSprite,
+        transparent: nodeSprite !== null,
+        alphaTest: nodeSprite ? 0.05 : 0,
       });
+      if (nodeSprite) {
+        disposables.push(nodeSprite);
+      }
       const edgeMaterial = new THREE.LineBasicMaterial({
         vertexColors: true,
         transparent: true,
@@ -264,23 +293,35 @@ export function createTopologyRendererSeam(options: TopologyRendererSeamOptions)
       let nodeCount = 0;
       let nodePositions: NodeLayout[] = [];
 
-      const signalColor = new THREE.Color(palette.signal);
+      const spikeColor = new THREE.Color(palette.spike);
       const mutedColor = new THREE.Color(palette.muted);
-      const inkColor = new THREE.Color(palette.ink);
-      const inhibitoryColor = mutedColor.clone().lerp(inkColor, INHIBITORY_INK_MIX);
-      const excitatoryColor = signalColor.clone();
-      // Pulses use the full-strength tokens so they read over the softer edges:
-      // `--signal` for excitatory synapses, `--ink` for inhibitory ones.
-      const excitatoryPulseColor = signalColor.clone();
-      const inhibitoryPulseColor = inkColor.clone();
+      const lineColor = new THREE.Color(palette.line);
+      const excitatoryColor = new THREE.Color(palette.accent);
+      const inhibitoryColor = new THREE.Color(palette.secondary);
+      // Pulses use the full-strength polarity tokens so they read over the
+      // softer edges: `--accent` excitatory, `--secondary` inhibitory.
+      const excitatoryPulseColor = excitatoryColor.clone();
+      const inhibitoryPulseColor = inhibitoryColor.clone();
+      // Resting edge colours, kept so a firing source can brighten its edges
+      // and then let them settle back.
+      let edgeBaseColors = new Float32Array(0);
+      const edgeScratchColor = lineColor.clone();
       // Reused for per-frame node colors instead of cloning each frame.
       const nodeScratchColor = mutedColor.clone();
       const spikeFlash = new Map<number, number>();
       let latest: NeuromorphicState | null = options.channel.latest();
       let latestAt = 0;
+      // Presentation-only smoothing: snapshots land every DEMO_TICK_MS (20 Hz)
+      // on a setInterval whose phase drifts against vsync, so latching each
+      // snapshot made node colours jump on 2-, 3- or 4-frame beats. Each frame
+      // now eases from what was on screen toward the latest snapshot over one
+      // tick. The simulation and its snapshots are untouched.
+      let shownActivation = new Float32Array(0);
+      let fromActivation = new Float32Array(0);
       const unsubscribe = options.channel.subscribe((state) => {
         latest = state;
         latestAt = performance.now();
+        fromActivation.set(shownActivation);
         for (const neuron of state.spikeNeurons) {
           spikeFlash.set(neuron, 1);
         }
@@ -301,6 +342,8 @@ export function createTopologyRendererSeam(options: TopologyRendererSeamOptions)
         nodePositions = layoutTopology(nodeCount);
         // Flash state is keyed by neuron id; drop ids of the previous topology.
         spikeFlash.clear();
+        shownActivation = new Float32Array(nodeCount);
+        fromActivation = new Float32Array(nodeCount);
 
         if (pointsObject) {
           world.remove(pointsObject);
@@ -339,10 +382,11 @@ export function createTopologyRendererSeam(options: TopologyRendererSeamOptions)
           linePositions.set([source.x, source.y, -0.01, target.x, target.y, -0.01], edge * 6);
           const base = state.topologyPolarities[edge] === 0 ? excitatoryColor : inhibitoryColor;
           const strength = edgeStrength(state.topologyEdgeWeights[edge], weightExtent);
-          const color = base.clone().lerp(mutedColor, 1 - strength);
+          const color = base.clone().lerp(lineColor, 1 - strength);
           color.toArray(lineColors, edge * 6);
           color.toArray(lineColors, edge * 6 + 3);
         }
+        edgeBaseColors = lineColors.slice();
         edgeGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
         edgeGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
         edgeObject = new THREE.LineSegments(edgeGeometry, edgeMaterial);
@@ -509,19 +553,40 @@ export function createTopologyRendererSeam(options: TopologyRendererSeamOptions)
 
         if (latest && nodeGeometry && nodeCount > 0) {
           const colors = nodeGeometry.getAttribute('color') as import('three').BufferAttribute;
+          const ease = Math.min(1, Math.max(0, (performance.now() - latestAt) / SPIKE_EVENT_STEP_MS));
+          let nodeStep = 0;
           for (let node = 0; node < nodeCount; node += 1) {
             const potential = latest.membranePotentials[node] ?? 0;
-            const activation = Math.min(1, Math.max(0, Math.abs(potential)));
+            const target = Math.min(1, Math.max(0, Math.abs(potential)));
+            const from = fromActivation[node];
+            const activation = from + (target - from) * ease;
+            nodeStep = Math.max(nodeStep, Math.abs(activation - shownActivation[node]));
+            shownActivation[node] = activation;
             const flash = spikeFlash.get(node) ?? 0;
             nodeScratchColor
               .copy(mutedColor)
-              .lerp(signalColor, Math.min(1, activation * 0.9 + flash))
+              .lerp(excitatoryColor, Math.min(1, activation * 0.6))
+              .lerp(spikeColor, flash)
               .toArray(colors.array as Float32Array, node * 3);
             if (flash > 0) {
-              spikeFlash.set(node, Math.max(0, flash - delta * 3));
+              spikeFlash.set(node, Math.max(0, flash - delta / SPIKE_FLASH_SECONDS));
             }
           }
           colors.needsUpdate = true;
+          probe?.record('node-step', nodeStep * 1000);
+        }
+
+        if (latest && edgeGeometry && edgeBaseColors.length > 0) {
+          const edgeColors = edgeGeometry.getAttribute('color') as import('three').BufferAttribute;
+          const out = edgeColors.array as Float32Array;
+          const edgeCount = Math.min(latest.topologyEdgeSources.length, edgeBaseColors.length / 6);
+          for (let edge = 0; edge < edgeCount; edge += 1) {
+            const flash = spikeFlash.get(latest.topologyEdgeSources[edge]) ?? 0;
+            edgeScratchColor.fromArray(edgeBaseColors, edge * 6).lerp(spikeColor, flash * EDGE_FIRE_MIX);
+            edgeScratchColor.toArray(out, edge * 6);
+            edgeScratchColor.toArray(out, edge * 6 + 3);
+          }
+          edgeColors.needsUpdate = true;
         }
 
         drawPulses(time);

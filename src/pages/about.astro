@@ -11,7 +11,7 @@ import '../styles/about.css';
     <p>I'm {site.fullName}. I live in San Marcos, Texas, and I'm open to relocating.</p>
   </section>
   <section class="about-profile" aria-label="Professional background">
-    <figure><img src="/assets/raul-cardenas-montoya.jpg" width="960" height="960" alt="Raul Cardenas Montoya" loading="eager" /><figcaption>Raul Cardenas Montoya, San Marcos, TX.</figcaption></figure>
+    <figure><picture><source type="image/webp" srcset="/assets/raul-cardenas-montoya-256.webp 256w, /assets/raul-cardenas-montoya-512.webp 512w" sizes="(max-width: 760px) 90vw, 380px" /><img src="/assets/raul-cardenas-montoya-512.jpg" srcset="/assets/raul-cardenas-montoya-256.jpg 256w, /assets/raul-cardenas-montoya-512.jpg 512w" sizes="(max-width: 760px) 90vw, 380px" width="512" height="512" alt="Raul Cardenas Montoya" loading="eager" /></picture><figcaption>Raul Cardenas Montoya, San Marcos, TX.</figcaption></figure>
     <div class="prose">
       <p>Most of what I build is infrastructure for agentic systems, synthetic data, and model evaluation. synthetic-factory is a synthetic-data platform where unknown provenance resolves to blocked and every record replays from its pack, seed, and actions. I've published 60 datasets from it on Hugging Face. agoge-forger is a local-first LoRA/QLoRA post-training harness with immutable manifests, split-integrity checks, and leakage detection.</p>
       <p>I've published 11 Rust crates on crates.io, including neuromod (2,000+ downloads) and nir-rs (1,000+). The spiking-network demo on the homepage runs on four of them. Upstream, I implemented the xAI/Grok provider in agent-afk, and I added Linux support and Devin usage tracking to UsagePal. Both sets of PRs are merged.</p>
