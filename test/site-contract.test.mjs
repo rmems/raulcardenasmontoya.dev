@@ -411,7 +411,7 @@ test('quality CI validates the locked Rust/WASM adapter before the frontend cont
   assert.match(workflow, /cargo clippy --manifest-path crates\/neuromorphic-adapter\/Cargo\.toml --locked --all-targets -- -D warnings/);
   assert.match(workflow, /cargo test --manifest-path crates\/neuromorphic-adapter\/Cargo\.toml --locked/);
   assert.match(workflow, /cargo check --manifest-path crates\/neuromorphic-adapter\/Cargo\.toml --locked --target wasm32-unknown-unknown/);
-  assert.match(workflow, /cargo install wasm-bindgen-cli --version 0\.2\.126 --locked/);
+  assert.match(workflow, /taiki-e\/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2\n {8}with:\n {10}tool: wasm-bindgen@0\.2\.126/);
   assert.match(workflow, /cargo llvm-cov \\\s+--manifest-path crates\/neuromorphic-adapter\/Cargo\.toml \\\s+--all-targets \\\s+--all-features \\/);
   assert.match(workflow, /browser-actions\/setup-chrome@c785b87e244131f27c9f19c1a33e2ead956ab7ce/);
   assert.match(workflow, /chrome-version: stable/);
