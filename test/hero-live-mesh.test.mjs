@@ -173,6 +173,6 @@ test('the crate trail pins every layer exactly as the adapter manifest and lockf
   }
   assert.equal(
     runtimeData.ADAPTER_SOURCE_URL,
-    'https://github.com/rmems/shipoftheseus.dev/tree/main/crates/neuromorphic-adapter',
+    'https://github.com/rmems/raulcardenasmontoya.dev/tree/main/crates/neuromorphic-adapter',
   );
 });
