@@ -20,10 +20,10 @@
 .plasticity-mechanisms h2,
 .plasticity-golden h2 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 1;
 }
 
@@ -52,7 +52,7 @@
 .plasticity-provenance dt,
 .plasticity-readout dt {
   margin: 0;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 650;
@@ -111,7 +111,7 @@
 }
 
 .plasticity-stimulus input:focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -131,13 +131,13 @@
 }
 
 .plasticity-reward-button {
-  border-color: var(--signal);
-  color: var(--signal);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .plasticity-reward-button:hover {
   color: var(--paper);
-  background: var(--signal);
+  background: var(--accent);
 }
 
 .plasticity-penalty-button:hover {
@@ -163,7 +163,7 @@
 
 /* Reward and modulators: a dashed signal frame, never shared with spike state. */
 .plasticity-panel-reward {
-  border: 1px dashed var(--signal);
+  border: 1px dashed var(--accent);
   background: var(--paper-deep);
 }
 
@@ -213,7 +213,7 @@
   white-space: nowrap;
 }
 
-.plasticity-panel-reward .plasticity-layer { border-color: var(--signal); color: var(--signal); }
+.plasticity-panel-reward .plasticity-layer { border-color: var(--accent); color: var(--accent); }
 
 .plasticity-caption {
   margin: 0;
@@ -251,7 +251,7 @@
 .plasticity-meter span {
   position: absolute;
   inset: 0;
-  background: var(--signal);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 120ms ease-out;
@@ -295,7 +295,7 @@ canvas[data-plasticity-modulator-strip] { height: 4.5rem; }
   font-size: 0.82rem;
 }
 
-.plasticity-event-log li[data-event='reward'] { color: var(--signal); }
+.plasticity-event-log li[data-event='reward'] { color: var(--accent); }
 
 .plasticity-table-wrap {
   max-width: 100%;
@@ -378,7 +378,7 @@ canvas[data-plasticity-modulator-strip] { height: 4.5rem; }
   margin: 1rem 0 0;
 }
 
-.plasticity-golden-table tr[data-golden-event='reward'] td { color: var(--signal); }
+.plasticity-golden-table tr[data-golden-event='reward'] td { color: var(--accent); }
 .plasticity-golden-table tr[data-new-episode] th,
 .plasticity-golden-table tr[data-new-episode] td { border-top: 1px solid var(--ink); }
 

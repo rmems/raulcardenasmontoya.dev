@@ -76,8 +76,8 @@ test('the static drawing uses the renderer layout and camera framing', () => {
   const positions = layout.layoutTopology(16);
 
   assert.equal(mesh.viewBox, '-1.35 -1.35 2.7 2.7');
-  assert.equal(mesh.nodeSizePx, 16);
-  assert.equal(mesh.edgeOpacity, 0.55);
+  assert.equal(mesh.nodeSizePx, 10);
+  assert.equal(mesh.edgeOpacity, 0.4);
   assert.equal(mesh.nodes.length, 16);
   assert.equal(mesh.edges.length, 64);
   mesh.nodes.forEach((node, index) => {
@@ -101,20 +101,20 @@ test('static edge colours match three.js colour mixing in the live renderer', ()
   const topology = adapterModule.auditedBrowserTopology();
   const mesh = layout.staticMeshGeometry(topology);
   const palette = layout.SITE_TOPOLOGY_PALETTE;
-  const signal = new THREE.Color(palette.signal);
+  const excitatory = new THREE.Color(palette.accent);
+  const inhibitory = new THREE.Color(palette.secondary);
   const muted = new THREE.Color(palette.muted);
-  const ink = new THREE.Color(palette.ink);
-  const inhibitory = muted.clone().lerp(ink, layout.INHIBITORY_INK_MIX);
+  const line = new THREE.Color(palette.line);
   const extent = layout.edgeWeightExtent(topology.edgeWeights);
 
   mesh.edges.forEach((edge, index) => {
-    const base = topology.polarities[index] === 0 ? signal : inhibitory;
+    const base = topology.polarities[index] === 0 ? excitatory : inhibitory;
     const strength = layout.edgeStrength(topology.edgeWeights[index], extent);
-    const expected = `#${base.clone().lerp(muted, 1 - strength).getHexString()}`;
+    const expected = `#${base.clone().lerp(line, 1 - strength).getHexString()}`;
     assert.equal(edge.stroke, expected, `edge ${index}`);
   });
   assert.equal(mesh.nodeFill, `#${muted.getHexString()}`);
-  assert.ok(mesh.edges.some((edge) => edge.stroke === palette.signal), 'the strongest excitatory edge is full --signal');
+  assert.ok(mesh.edges.some((edge) => edge.stroke === palette.accent), 'the strongest excitatory edge is full --accent');
 });
 
 test('static drawing helpers reject inconsistent topologies and bad colours', () => {
@@ -127,10 +127,10 @@ test('static drawing helpers reject inconsistent topologies and bad colours', ()
     () => layout.staticMeshGeometry({ ...topology, edgeTargets: topology.edgeTargets.map(() => 99) }),
     /outside the topology/,
   );
-  assert.throws(() => layout.staticMeshGeometry(topology, { ...layout.SITE_TOPOLOGY_PALETTE, ink: 'black' }), RangeError);
+  assert.throws(() => layout.staticMeshGeometry(topology, { ...layout.SITE_TOPOLOGY_PALETTE, line: 'black' }), RangeError);
   assert.equal(layout.edgeWeightExtent([]), 1);
   assert.equal(layout.edgeWeightExtent([0, -0.5, 0.25]), 0.5);
-  assert.equal(layout.edgeStrength(0, 1), 0.35);
+  assert.equal(layout.edgeStrength(0, 1), 0.15);
   assert.equal(layout.edgeStrength(-2, 1), 1);
 });
 

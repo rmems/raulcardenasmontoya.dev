@@ -137,8 +137,13 @@ test('site.ts has no null placeholders and the résumé PDF ships', () => {
 });
 
 test('the about page includes a local, accessible portrait', () => {
-  assert.equal(existsSync(new URL('../public/assets/raul-cardenas-montoya.jpg', import.meta.url)), true);
-  assert.match(read('src/pages/about.astro'), /raul-cardenas-montoya\.jpg/);
+  for (const file of ['raul-cardenas-montoya-256.webp', 'raul-cardenas-montoya-512.webp', 'raul-cardenas-montoya-256.jpg', 'raul-cardenas-montoya-512.jpg']) {
+    assert.equal(existsSync(new URL(`../public/assets/${file}`, import.meta.url)), true, file);
+  }
+  assert.match(read('src/pages/about.astro'), /<source type="image\/webp" srcset="\/assets\/raul-cardenas-montoya-256\.webp 256w/);
+  assert.match(read('src/pages/about.astro'), /<img src="\/assets\/raul-cardenas-montoya-512\.jpg"/);
+  // The width/height attributes would override aspect-ratio without this.
+  assert.match(read('src/styles/about.css'), /\.about-profile img \{[^}]*height: auto;/);
   assert.match(read('src/pages/about.astro'), /alt="Raul Cardenas Montoya"/);
 });
 
@@ -184,8 +189,8 @@ test('supported Node versions match the locked build tooling', () => {
 test('visual foundations use accessible tokens and honor reduced motion', () => {
   const styles = read('src/styles/global.css');
 
-  assert.match(styles, /--muted:\s*#62635c/);
-  assert.match(styles, /--signal:\s*#a94422/);
+  assert.match(styles, /--muted:\s*#5b6474/);
+  assert.match(styles, /--accent:\s*#4f46e5/);
   assert.match(styles, /prefers-reduced-motion:\s*reduce/);
   assert.match(styles, /animation:\s*none/);
   assert.match(styles, /button:focus-visible/);
@@ -481,7 +486,7 @@ test('the plasticity lab is static-first, keeps reward state apart from spike st
   assert.match(page, /data-plasticity-panel="network"/);
   assert.ok(page.indexOf('data-plasticity-panel="reward"') < page.indexOf('data-plasticity-panel="network"'));
   assert.ok(!page.slice(page.indexOf('data-plasticity-panel="reward"'), page.indexOf('data-plasticity-panel="network"')).includes('data-plasticity-raster'));
-  assert.match(styles, /\.plasticity-panel-reward \{\s*border: 1px dashed var\(--signal\)/);
+  assert.match(styles, /\.plasticity-panel-reward \{\s*border: 1px dashed var\(--accent\)/);
   assert.match(styles, /\.plasticity-panel-network \{\s*border: 1px solid var\(--ink\)/);
 
   // Enabled mechanisms and the limits of the crates are stated plainly.

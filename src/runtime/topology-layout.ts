@@ -16,11 +16,13 @@ export interface NodeLayout {
 /** Half the shorter side of the orthographic view, in world units. */
 export const CAMERA_EXTENT = 1.35;
 /** Neuron marker size in CSS pixels (`PointsMaterial.size`, no attenuation). */
-export const NODE_SIZE_PX = 16;
+export const NODE_SIZE_PX = 10;
 /** Opacity of the edge lines. */
-export const EDGE_OPACITY = 0.55;
-/** Inhibitory edges are `--muted` moved this far toward `--ink`. */
-export const INHIBITORY_INK_MIX = 0.25;
+export const EDGE_OPACITY = 0.4;
+/** A spike flash decays to zero in about this many seconds. */
+export const SPIKE_FLASH_SECONDS = 0.3;
+/** How far a firing neuron pulls its outgoing edges toward `--spike`. */
+export const EDGE_FIRE_MIX = 0.85;
 
 /**
  * Deterministic topology layout: nodes on a ring with a small index-keyed
@@ -48,18 +50,26 @@ export function edgeWeightExtent(weights: ArrayLike<number>): number {
 }
 
 /**
- * How much of its polarity colour an edge keeps (the rest is `--muted`):
- * 0.35 for a zero weight, 1 for the strongest edge.
+ * How much of its polarity colour an edge keeps (the rest fades to `--line`):
+ * 0.15 for a zero weight, 1 for the strongest edge, so weak synapses recede
+ * and the strong ones carry the picture.
  */
 export function edgeStrength(weight: number, weightExtent: number): number {
-  return Math.min(1, 0.35 + 0.65 * (Math.abs(weight) / weightExtent));
+  return Math.min(1, 0.15 + 0.85 * (Math.abs(weight) / weightExtent));
 }
 
 /** The palette tokens the renderer reads from `src/styles/global.css`. */
 export interface TopologyPalette {
-  signal: string;
+  /** Excitatory synapses. */
+  accent: string;
+  /** Inhibitory synapses. */
+  secondary: string;
+  /** Firing neurons and the edges they fire along. */
+  spike: string;
+  /** Resting neurons. */
   muted: string;
-  ink: string;
+  /** What weak edges fade toward. */
+  line: string;
 }
 
 /**
@@ -67,9 +77,11 @@ export interface TopologyPalette {
  * computed style exists. `test/hero-live-mesh.test.mjs` keeps them in sync.
  */
 export const SITE_TOPOLOGY_PALETTE: TopologyPalette = Object.freeze({
-  signal: '#a94422',
-  muted: '#62635c',
-  ink: '#171816',
+  accent: '#4f46e5',
+  secondary: '#0ea5a4',
+  spike: '#f43f5e',
+  muted: '#5b6474',
+  line: '#e3e7ed',
 });
 
 /** Canonical topology fields the drawing needs (a contract-5 snapshot subset). */
@@ -142,7 +154,7 @@ const round = (value: number) => Math.round(value * 10_000) / 10_000;
  * The live renderer's first frame as plain SVG geometry: the same ring layout,
  * the same camera framing (`viewBox` with the default `xMidYMid meet` behaves
  * like the orthographic camera at any aspect ratio), and the same edge colours
- * (polarity colour mixed toward `--muted` by weight). SVG's y axis points
+ * (polarity colour mixed toward `--line` by weight). SVG's y axis points
  * down, so world y is negated. Node markers keep their resting `--muted`
  * colour, which is what the renderer shows before any membrane potential
  * arrives.
@@ -162,10 +174,10 @@ export function staticMeshGeometry(
   }
 
   const positions = layoutTopology(nodeCount);
-  const signal = parseHex(palette.signal);
+  const excitatory = parseHex(palette.accent);
+  const inhibitory = parseHex(palette.secondary);
   const muted = parseHex(palette.muted);
-  const ink = parseHex(palette.ink);
-  const inhibitory = mix(muted, ink, INHIBITORY_INK_MIX);
+  const line = parseHex(palette.line);
   const extent = edgeWeightExtent(topology.edgeWeights);
   const point = (node: number) => {
     const position = positions[node];
@@ -179,14 +191,14 @@ export function staticMeshGeometry(
   for (let edge = 0; edge < edgeCount; edge += 1) {
     const source = point(topology.edgeSources[edge]);
     const target = point(topology.edgeTargets[edge]);
-    const base = topology.polarities[edge] === 0 ? signal : inhibitory;
+    const base = topology.polarities[edge] === 0 ? excitatory : inhibitory;
     const strength = edgeStrength(topology.edgeWeights[edge], extent);
     edges.push({
       x1: round(source.x),
       y1: round(-source.y),
       x2: round(target.x),
       y2: round(-target.y),
-      stroke: toHex(mix(base, muted, 1 - strength)),
+      stroke: toHex(mix(base, line, 1 - strength)),
     });
   }
 

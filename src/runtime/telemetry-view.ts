@@ -40,11 +40,11 @@ function readPalette(): RasterPalette {
   const style = globalThis.getComputedStyle?.(document.documentElement);
   const token = (name: string, fallback: string) => style?.getPropertyValue(name).trim() || fallback;
   return {
-    background: token('--paper', '#f1f0e9'),
-    spike: token('--signal', '#a94422'),
-    highlight: token('--signal-soft', '#e8cabc'),
-    lane: token('--muted', '#62635c'),
-    rule: token('--line', '#c5c4b9'),
+    background: token('--surface', '#ffffff'),
+    spike: token('--spike', '#f43f5e'),
+    highlight: token('--accent-soft', '#e0e7ff'),
+    lane: token('--muted', '#5b6474'),
+    rule: token('--line', '#e3e7ed'),
   };
 }
 

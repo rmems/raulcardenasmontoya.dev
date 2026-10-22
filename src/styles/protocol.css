@@ -23,10 +23,10 @@
 
 .protocol-section-heading h2 {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 400;
-  letter-spacing: -0.05em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
   line-height: 1;
 }
 
@@ -51,7 +51,7 @@
 
 .protocol-fields dt {
   margin: 0;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 650;
@@ -133,11 +133,11 @@
 
 .protocol-fixture[data-protocol-status='rejected'] {
   border-style: solid;
-  border-color: var(--signal);
+  border-color: var(--accent);
 }
 
 .protocol-fixture[data-protocol-status='rejected'] .protocol-fixture-status {
-  color: var(--signal);
+  color: var(--accent);
 }
 
 .protocol-bytes {
@@ -192,7 +192,7 @@
 .protocol-table caption {
   caption-side: top;
   margin-bottom: 0.55rem;
-  color: var(--signal);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 650;
@@ -232,7 +232,7 @@
 }
 
 .protocol-check-result {
-  color: var(--signal);
+  color: var(--accent);
 }
 
 @media (max-width: 900px) {
