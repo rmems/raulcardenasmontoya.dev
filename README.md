@@ -28,7 +28,7 @@ The browser-loadable adapter packages committed at `public/wasm/neuromorphic-ada
 Pull requests provision these dependencies and run the same command in CI. The **Deploy** workflow (`.github/workflows/deploy.yml`) repeats the validation on pushes to `main` and then publishes `dist` to GitHub Pages.
 
 Coverage and Qlty uploads run in the **Quality** workflow (`coverage report and
-uploads` job after `validate`). See
+uploads` job, in parallel with `validate`). See
 [docs/coverage-and-quality.md](docs/coverage-and-quality.md) for local coverage,
 Codecov/Qlty setup, and fork-PR behavior.
 
