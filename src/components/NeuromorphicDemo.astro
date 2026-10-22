@@ -63,7 +63,7 @@ const nodePath = mesh.nodes.map((node) => `M${node.x} ${node.y}h0`).join('');
     <div class="hero-runtime-heading">
       <p class="eyebrow">Neuromorphic demo</p>
       <h2 id="demo-title">Every pulse traces back to a crate.</h2>
-      <p class="demo-caption">What you're looking at: a small spiking neural network running live in your browser. It's built from four Rust crates I wrote and published, compiled to WebAssembly.</p>
+      <p class="demo-caption">What you're looking at: a small spiking neural network that runs in your browser when JavaScript and WebGL are available. It's built from four Rust crates I wrote and published, compiled to WebAssembly.</p>
     </div>
     <div class="hero-runtime-copy">
       <p class="demo-copy">Every 50 ms the site turns your pointer, or a scripted path when nobody is interacting, into one <code>[x, y, pressure]</code> packet. <code>kinetic-signals</code> turns it into 16 features, <code>axon-encoder</code> encodes them as spikes, <code>neuromod</code> steps its LIF neurons, and <code>synaptic-wiring</code> owns the synapses and delays each pulse travels along. The <a href={ADAPTER_SOURCE_URL}>adapter crate</a> composes them into one WebAssembly module; the canvas only draws what it returns.</p>
