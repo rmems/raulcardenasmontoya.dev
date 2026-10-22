@@ -53,11 +53,10 @@ npm run test:layout         # built pages at 320–1024 px, 100%/200% text, site
 
 ## Conventions visible in the repo
 
-- Don't add deployment/hosting configuration. The README says the site is local-only until
-  deployment is explicitly approved, and out-of-scope hosting config was removed (#28).
-- Use `CONTENT.md` as the checklist before publishing content changes. In `src/data/site.ts` the
-  GitHub, LinkedIn and Hugging Face links are live; `email` is still `null` until a public address is
-  chosen. Don't invent benchmark numbers for native evidence; leave the catalog empty without a
+- The site deploys to GitHub Pages from `main` through `.github/workflows/deploy.yml` (#63), at
+  `raulcardenasmontoya.me`. Don't add other hosting configuration (Cloudflare Pages, Netlify, Vercel).
+- Use `CONTENT.md` as the checklist before publishing content changes. `src/data/site.ts` holds the
+  public identity: the email, the résumé PDF path, and the profile links are all set (#66). Don't invent benchmark numbers for native evidence; leave the catalog empty without a
   measured capture.
 - Rust checks pin `cargo +1.99.0`. clippy, test and check also pass `--locked`; `cargo fmt` doesn't
   take that flag.
