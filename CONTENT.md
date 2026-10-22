@@ -31,3 +31,12 @@ DNS and any `shipoftheseus.dev` redirect live outside this repository (Namecheap
 ## Nav visibility
 
 Evidence and Notes appear in the primary nav only when their collection has a published entry (a native-evidence artifact, or a note with `draft: false`). This is decided at build time in `src/components/SiteHeader.astro`. The pages still build while empty, so direct links and the sitemap keep working. `/projects/` redirects to `/work/`.
+
+## Artifacts page
+
+`/artifacts/` lists Hugging Face datasets and merged upstream PRs. `/evidence/` stays reserved for measured CUDA/FPGA captures.
+
+- The Hugging Face lists are fetched from the public API at build time (no token). If the API is unreachable, or `SKIP_HF_FETCH=1`, the page uses `src/data/artifacts/hf-snapshot.json` and says so. Refresh it with `node scripts/build-hf-snapshot.mjs`.
+- Each dataset shows only the status its own card states. Repos with no data files (card only) and `rmems/agent-honest-stop-episodes` are never listed (`EXCLUDED_DATASETS` in `src/artifacts/hf-source.mjs`).
+- `src/data/artifacts/upstream-prs.json` lists only PRs the GitHub API reports as merged, with additions, deletions and changed files. Re-verify before adding one. Never list JuliaRegistries/General registrations as contributions.
+- Counts carry their "as of" date; update `verifiedAt` when you re-verify.

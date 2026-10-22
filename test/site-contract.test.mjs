@@ -385,7 +385,7 @@ test('repository identity uses raulcardenasmontoya.me', () => {
     '.agents/setup',
   ];
 
-  assert.equal(packageJson.name, 'raulcardenasmontoya-me');
+  assert.equal(packageJson.name, 'raulcardenasmontoya.me');
   assert.equal(packageJson.repository.type, 'git');
   assert.equal(packageJson.repository.url, 'git+https://github.com/rmems/raulcardenasmontoya.me.git');
   assert.match(read('README.md'), /^# raulcardenasmontoya\.me$/m);
@@ -425,7 +425,18 @@ test('portfolio stays static and deploys only through GitHub Pages', () => {
   assert.match(deploy, /name: github-pages/);
   assert.equal(read('public/CNAME').trim(), 'raulcardenasmontoya.me');
   assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/);
+  assert.match(readme, /^# raulcardenasmontoya\.me$/m);
   assert.match(readme, /Custom domain: `raulcardenasmontoya.me`/);
+  assert.doesNotMatch(readme, /raulcardenasmontoya\.dev|shipoftheseus\.dev/);
+  const packageJson = JSON.parse(read('package.json'));
+  assert.equal(packageJson.name, 'raulcardenasmontoya.me');
+  assert.equal(packageJson.repository.type, 'git');
+  assert.equal(packageJson.repository.url, 'git+https://github.com/rmems/raulcardenasmontoya.me.git');
+  assert.equal(
+    read('src/native-evidence/view.ts').match(/PORTFOLIO_REPOSITORY_URL = '([^']+)'/)?.[1],
+    'https://github.com/rmems/raulcardenasmontoya.me',
+  );
+  assert.doesNotMatch(read('docs/coverage-and-quality.md'), /raulcardenasmontoya\.dev|shipoftheseus\.dev/);
   const deployWorkflows = readdirSync(new URL('../.github/workflows/', import.meta.url)).filter((f) => f === 'deploy.yml');
   assert.deepEqual(deployWorkflows, ['deploy.yml']);
   for (const path of ['.openai/hosting.json', 'public/_redirects', '_redirects', 'wrangler.toml', 'netlify.toml']) {

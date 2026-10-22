@@ -1,0 +1,11 @@
+{
+  "verifiedAt": "2026-10-21",
+  "method": "GitHub REST API GET /repos/{repo}/pulls/{number}: merged === true; additions, deletions and changed_files as reported by GitHub.",
+  "pullRequests": [
+    { "repo": "Halloweedev/usagepal", "number": 67, "title": "Feat/grok usage costs", "mergedAt": "2026-09-14", "additions": 562, "deletions": 97, "changedFiles": 6 },
+    { "repo": "Halloweedev/usagepal", "number": 56, "title": "Feat/antigravity metrics", "mergedAt": "2026-08-31", "additions": 1275, "deletions": 152, "changedFiles": 11 },
+    { "repo": "Halloweedev/usagepal", "number": 48, "title": "feat(devin): add Linux support and enhance Devin tracking metrics", "mergedAt": "2026-08-23", "additions": 1273, "deletions": 508, "changedFiles": 13 },
+    { "repo": "griffinwork40/agent-afk", "number": 1242, "title": "fix(xai-oauth): send valid Grok CLI version to proxy", "mergedAt": "2026-08-21", "additions": 171, "deletions": 8, "changedFiles": 7 },
+    { "repo": "griffinwork40/agent-afk", "number": 1019, "title": "feat(provider): first-class xAI/Grok with API key and SuperGrok OAuth", "mergedAt": "2026-08-14", "additions": 4287, "deletions": 117, "changedFiles": 75 }
+  ]
+}

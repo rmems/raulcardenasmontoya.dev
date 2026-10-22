@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { loadHfArtifacts } from '../artifacts/hf';
+import { prUrl, upstreamPrs, upstreamVerifiedAt } from '../artifacts/upstream';
+
+const hf = await loadHfArtifacts();
+const number = new Intl.NumberFormat('en-US');
+---
+<BaseLayout title="Artifacts" description="Published Hugging Face datasets and merged upstream pull requests, with counts dated as of the day they were checked.">
+  <section class="page-intro compact" aria-labelledby="artifacts-page-title">
+    <p class="eyebrow">Published artifacts</p>
+    <h1 id="artifacts-page-title">What I've published and merged.</h1>
+    <p>Hugging Face datasets and pull requests merged into other people's projects. Measured CUDA and FPGA captures are separate and live on <a href="/evidence/">Evidence</a>.</p>
+  </section>
+
+  <section class="section artifacts-section" aria-labelledby="artifacts-hf-title" data-hf-source={hf.source}>
+    <p class="eyebrow">Hugging Face · as of {hf.asOf}</p>
+    <h2 id="artifacts-hf-title">{hf.datasets.length} datasets, {hf.models.length} {hf.models.length === 1 ? 'model' : 'models'}.</h2>
+    <p class="artifacts-note">Each label is the status its own dataset card states. A missing label means none of the status wording this page recognizes (research-only, personal research, raw/uncurated, not training data) appears on the card; read the card itself. Repos that hold only a card and no data are not listed. Counts as of {hf.asOf}{hf.source === 'snapshot' ? (hf.fallbackReason === 'skipped' ? ' (from the committed snapshot; the live fetch was skipped for this build)' : ' (from the committed snapshot; the Hugging Face API was unreachable at build time)') : ''}.</p>
+
+    <h3>Datasets</h3>
+    <ul class="artifact-list" data-hf-datasets>
+      {hf.datasets.map((dataset) => (
+        <li>
+          <a href={dataset.url} target="_blank" rel="noopener noreferrer">{dataset.id}</a>
+          {dataset.statusLabels.length > 0 ? <span class="artifact-status">{dataset.statusLabels.join(' · ')}</span> : null}
+        </li>
+      ))}
+    </ul>
+
+    <h3>Models</h3>
+    <ul class="artifact-list" data-hf-models>
+      {hf.models.map((model) => (
+        <li><a href={model.url} target="_blank" rel="noopener noreferrer">{model.id}</a></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section artifacts-section" aria-labelledby="artifacts-prs-title">
+    <p class="eyebrow">Upstream contributions · verified {upstreamVerifiedAt}</p>
+    <h2 id="artifacts-prs-title">{upstreamPrs.length} merged pull requests.</h2>
+    <p class="artifacts-note">Each one is checked against the GitHub API as merged. Diff sizes are additions and deletions as GitHub reports them. Package registrations are not contributions and are not listed.</p>
+    <ul class="artifact-list" data-upstream-prs>
+      {upstreamPrs.map((pr) => (
+        <li>
+          <a href={prUrl(pr)} target="_blank" rel="noopener noreferrer">{pr.repo}#{pr.number}</a>: {pr.title}
+          <span class="artifact-status">merged {pr.mergedAt} · +{number.format(pr.additions)} −{number.format(pr.deletions)} · {pr.changedFiles} files</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
