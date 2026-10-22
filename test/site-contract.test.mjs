@@ -24,7 +24,6 @@ test('every requested primary route is backed by an Astro page', () => {
     'src/pages/index.astro',
     'src/pages/work.astro',
     'src/pages/about.astro',
-    'src/pages/projects.astro',
     'src/pages/notes/index.astro',
     'src/pages/contact.astro',
     'src/pages/resume.astro',
@@ -91,7 +90,7 @@ test('publishing handoff values become live only when configured', () => {
   assert.match(contact, /mailto:\$\{site\.email\}/);
   assert.match(resume, /site\.resumePath/);
   assert.match(resume, /href=\{site\.resumePath\}/);
-  assert.match(site, /site\.resumePath \? \[\{ href: '\/resume\/', label: 'Résumé' \}\] : \[\]/);
+  assert.match(site, /site\.resumePath \? \[\{ href: site\.resumePath, label: 'Résumé' \}\] : \[\]/);
 });
 
 test('the work page expands existing project data without unsupported outcomes or links', () => {
@@ -102,7 +101,7 @@ test('the work page expands existing project data without unsupported outcomes o
   assert.match(work, /Questions in view/);
   assert.match(work, /Working areas/);
   assert.match(projects, /questions: \[/);
-  assert.match(work, /intentionally avoid outcomes or links that are not ready to be supported publicly/);
+  assert.match(work, /Each brief states its own status and what it does not show yet\./);
   assert.doesNotMatch(projects, /https?:\/\//);
 });
 
@@ -111,7 +110,7 @@ test('public identity links use the verified profile destinations', () => {
 
   assert.match(identity, /fullName: 'Raul Cardenas Montoya'/);
   assert.match(identity, /github: 'https:\/\/github\.com\/rmems'/);
-  assert.match(identity, /linkedin: 'https:\/\/www\.linkedin\.com\/in\/raul-cardenas-montoya-8aa09839a'/);
+  assert.match(identity, /linkedin: 'https:\/\/www\.linkedin\.com\/in\/raul-cardenas-montoya'/);
   assert.match(identity, /huggingface: 'https:\/\/huggingface\.co\/rmems'/);
 });
 
@@ -122,9 +121,7 @@ test('identity carries the AI Engineer title, every profile link, and Person JSO
   assert.match(identity, /title: 'AI Engineer'/);
   assert.match(identity, /x: 'https:\/\/x\.com\/KeepOnSpiking'/);
   assert.match(identity, /cratesio: 'https:\/\/crates\.io\/users\/rmems'/);
-  assert.match(identity, /cursor: 'https:\/\/cursor\.com\/@hunkvsleon'/);
-  assert.match(identity, /instagram: 'https:\/\/instagram\.com\/raccooncity_resident'/);
-  assert.match(identity, /threads: 'https:\/\/threads\.com\/@raccooncity_resident'/);
+  assert.doesNotMatch(identity, /cursor:|instagram:|threads:/);
   assert.match(layout, /'@type': 'Person'/);
   assert.match(layout, /sameAs: Object\.values\(site\.social\)/);
   assert.match(layout, /application\/ld\+json/);
@@ -160,7 +157,6 @@ test('notes publish only non-draft Markdown entries and format date-only values 
 
 test('editable project cards receive their ordinal from the rendered collection order', () => {
   assert.match(read('src/pages/index.astro'), /map\(\(project, index\) => <ProjectCard project=\{project\} index=\{index\}/);
-  assert.match(read('src/pages/projects.astro'), /map\(\(project, index\) => <ProjectCard project=\{project\} index=\{index\}/);
   assert.match(read('src/components/ProjectCard.astro'), /project, index/);
   assert.doesNotMatch(read('src/components/ProjectCard.astro'), /\.indexOf\(project\.slug\)/);
 });
@@ -251,8 +247,9 @@ test('the homepage hero hosts the live demo static-first and traces it to its cr
 
   // The hero copy stays in the page and is the first thing in the island.
   assert.match(page, /<NeuromorphicDemo>\s*<div class="hero-heading" slot="heading">/);
-  assert.match(page, /<h1 id="hero-title">Building <em>inspectable<\/em> systems for intelligent work\.<\/h1>/);
-  assert.match(page, /class="button button-primary" href="\/work\/"/);
+  assert.match(page, /<h1 id="hero-title">I build infrastructure for <em>agentic systems<\/em>, synthetic data, and model evaluation\.<\/h1>/);
+  assert.match(page, /class="button button-primary" href=\{site\.resumePath\}/);
+  assert.match(page, /href=\{`mailto:\$\{site\.email\}`\}/);
   assert.match(island, /<section class="hero hero-live" aria-labelledby="hero-title">/);
   assert.ok(island.indexOf('<slot />') < island.indexOf('<figure class="hero-mesh"'), 'copy precedes the mesh');
 
@@ -426,7 +423,7 @@ test('quality CI validates the locked Rust/WASM adapter before the frontend cont
 
 test('primary navigation lists Labs between Evidence and About', () => {
   const site = read('src/data/site.ts');
-  const evidence = site.indexOf("{ href: '/evidence/', label: 'Evidence' }");
+  const evidence = site.indexOf("{ href: '/evidence/', label: 'Evidence', requires: 'evidence' }");
   const labs = site.indexOf("{ href: '/labs/', label: 'Labs' }");
   const about = site.indexOf("{ href: '/about/', label: 'About' }");
 
@@ -592,4 +589,26 @@ test('NIR inspection ships only in the labs package, never in the homepage packa
     assert.equal(existsSync(new URL(`../public/wasm/neuromorphic-adapter-labs/${file}`, import.meta.url)), true, file);
   }
   assert.doesNotMatch(read('public/wasm/neuromorphic-adapter/neuromorphic_adapter.js'), /WasmNirInspection/);
+});
+
+test('the brand, footer, and contact page lead with Raul Cardenas Montoya, email, and the résumé', () => {
+  const header = read('src/components/SiteHeader.astro');
+  const layout = read('src/layouts/BaseLayout.astro');
+  const contact = read('src/pages/contact.astro');
+  assert.match(read('src/data/site.ts'), /name: 'Raul Cardenas Montoya'/);
+  assert.match(header, /<span>\{site\.name\}<\/span>/);
+  assert.match(header, /mailto:\$\{site\.email\}/);
+  assert.doesNotMatch(header + layout, /Ship of Theseus/);
+  assert.match(layout, /\{site\.fullName\}<\/p>/);
+  assert.ok(contact.indexOf('mailto:') < contact.indexOf('profiles.map'), 'email comes first on Contact');
+});
+
+test('Evidence and Notes stay out of the nav until they have published entries; Projects folds into Work', () => {
+  const site = read('src/data/site.ts');
+  const header = read('src/components/SiteHeader.astro');
+  assert.match(site, /label: 'Evidence', requires: 'evidence'/);
+  assert.match(site, /label: 'Notes', requires: 'notes'/);
+  assert.match(header, /navigation\.filter\(\(item\) => !item\.requires \|\| available\[item\.requires\]\)/);
+  assert.equal(existsSync(new URL('../src/pages/projects.astro', import.meta.url)), false);
+  assert.match(read('astro.config.mjs'), /'\/projects\/': '\/work\/'/);
 });

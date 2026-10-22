@@ -7,10 +7,7 @@ const profiles = [
   { label: 'Hugging Face', href: site.social.huggingface, detail: '@rmems' },
   { label: 'X', href: site.social.x, detail: '@KeepOnSpiking' },
   { label: 'crates.io', href: site.social.cratesio, detail: 'rmems' },
-  { label: 'Cursor', href: site.social.cursor, detail: '@hunkvsleon' },
-  { label: 'Instagram', href: site.social.instagram, detail: '@raccooncity_resident' },
-  { label: 'Threads', href: site.social.threads, detail: '@raccooncity_resident' },
 ];
 const hasPublicEmail = Boolean(site.email);
 ---
-<BaseLayout title="Contact"><section class="page-intro compact" aria-labelledby="contact-title"><p class="eyebrow">Contact</p><h1 id="contact-title">Start with the work.</h1><p>For a technical conversation, collaboration, or question about a project, the public profile links below are the best starting point.</p></section><section class="contact-panel" aria-label="Contact links">{profiles.map((profile) => <a href={profile.href} target="_blank" rel="noreferrer"><span>{profile.label}</span><strong>{profile.detail}</strong><span aria-hidden="true">↗</span></a>)}{hasPublicEmail && <a href={`mailto:${site.email}`}><span>Email</span><strong>{site.email}</strong><span aria-hidden="true">↗</span></a>}</section></BaseLayout>
+<BaseLayout title="Contact"><section class="page-intro compact" aria-labelledby="contact-title"><p class="eyebrow">Contact</p><h1 id="contact-title">Email me.</h1><p>Email is the fastest way to reach me. I'm open to junior and new-grad AI engineering roles, and to relocating. My <a href={site.resumePath}>résumé is a one-page PDF</a>.</p></section><section class="contact-panel" aria-label="Contact links">{hasPublicEmail && <a href={`mailto:${site.email}`}><span>Email</span><strong>{site.email}</strong><span aria-hidden="true">↗</span></a>}{profiles.map((profile) => <a href={profile.href} target="_blank" rel="noreferrer"><span>{profile.label}</span><strong>{profile.detail}</strong><span aria-hidden="true">↗</span></a>)}</section></BaseLayout>

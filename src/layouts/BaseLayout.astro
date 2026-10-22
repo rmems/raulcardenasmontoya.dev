@@ -50,8 +50,8 @@ const socialImage = new URL('/assets/social-card.png', Astro.site);
       <SiteHeader currentPath={Astro.url.pathname} />
       <main id="main-content"><slot /></main>
       <footer class="site-footer">
-        <p>© {new Date().getFullYear()} Ship of Theseus</p>
-        <p>Built for inspectable work.</p>
+        <p>© {new Date().getFullYear()} {site.fullName}</p>
+        <p><a href={`mailto:${site.email}`}>{site.email}</a> · <a href={site.social.github} target="_blank" rel="noreferrer">GitHub</a> · <a href={site.resumePath}>Résumé (PDF)</a></p>
       </footer>
     </div>
   </body>
