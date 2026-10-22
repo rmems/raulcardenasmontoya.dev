@@ -27,3 +27,7 @@ Recorded `corpus-ipc` protocol fixtures for `/protocol/` live in `public/protoco
 The canonical domain is `raulcardenasmontoya.me` (registrar and DNS at Namecheap, served by GitHub Pages). `shipoftheseus.dev` stays on Cloudflare and may 301 to it from the apex and `www` only. `hooks.shipoftheseus.dev` is explicitly out of scope: it remains the active PR-babysit GitHub-webhook Cloudflare Tunnel endpoint and must not be redirected, deleted, or otherwise changed for this site.
 
 DNS and any `shipoftheseus.dev` redirect live outside this repository (Namecheap and Cloudflare).
+
+## Nav visibility
+
+Evidence and Notes appear in the primary nav only when their collection has a published entry (a native-evidence artifact, or a note with `draft: false`). This is decided at build time in `src/components/SiteHeader.astro`. The pages still build while empty, so direct links and the sitemap keep working. `/projects/` redirects to `/work/`.

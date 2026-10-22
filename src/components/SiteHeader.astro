@@ -1,11 +1,18 @@
 ---
+import { getCollection } from 'astro:content';
 import SignalMark from './SignalMark.astro';
 import { navigation, site } from '../data/site';
+import { loadPublishedNativeEvidence } from '../native-evidence/catalog';
 const { currentPath = '' } = Astro.props;
 const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+const available = {
+  evidence: loadPublishedNativeEvidence().artifacts.length > 0,
+  notes: (await getCollection('notes', ({ data }) => !data.draft)).length > 0,
+};
+const visibleNavigation = navigation.filter((item) => !item.requires || available[item.requires]);
 ---
 <header class="site-header">
-  <a class="brand" href="/" aria-label={`${site.name} home`}><SignalMark /><span>Ship of Theseus</span></a>
-  <nav class="primary-nav" aria-label="Primary navigation">{navigation.map((item) => <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}</nav>
-  <a class="header-profile" href={site.social.github} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  <a class="brand" href="/" aria-label={`${site.name} home`}><SignalMark /><span>{site.name}</span></a>
+  <nav class="primary-nav" aria-label="Primary navigation">{visibleNavigation.map((item) => <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}</nav>
+  <a class="header-profile" href={`mailto:${site.email}`}>Email <span aria-hidden="true">↗</span></a>
 </header>

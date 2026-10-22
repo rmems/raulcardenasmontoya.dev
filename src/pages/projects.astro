@@ -1,6 +1,0 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { projects } from '../data/projects';
----
-<BaseLayout title="Projects" description="Selected AI/ML systems engineering projects and research explorations."><section class="page-intro compact" aria-labelledby="projects-title"><p class="eyebrow">Project index</p><h1 id="projects-title">A working set of systems investigations.</h1><p>Each entry is deliberately modest: project scope and methods first, claims only when there is evidence to support them. The expanded portfolio adds the questions guiding each investigation.</p><a class="button button-primary intro-action" href="/work/">View expanded work <span aria-hidden="true">→</span></a></section><section class="project-grid full-grid" aria-label="Projects">{projects.map((project, index) => <ProjectCard project={project} index={index} />)}</section></BaseLayout>
