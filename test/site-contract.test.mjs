@@ -366,6 +366,43 @@ test('sitemap, robots.txt and a 1200x630 social card are wired up', () => {
   assert.match(read('src/layouts/BaseLayout.astro'), /og:image:width" content="1200"/);
 });
 
+test('repository identity uses raulcardenasmontoya.me', () => {
+  const packageJson = JSON.parse(read('package.json'));
+  const identityFiles = [
+    'README.md',
+    'AGENTS.md',
+    'CLAUDE.md',
+    'astro.config.mjs',
+    'docs/coverage-and-quality.md',
+    'package.json',
+    'package-lock.json',
+    'src/native-evidence/view.ts',
+    'test/hero-live-mesh.test.mjs',
+    '.github/workflows/deploy.yml',
+    '.github/workflows/quality.yml',
+    '.coderabbit.yaml',
+    '.cursor/environment.json',
+    '.agents/setup',
+  ];
+
+  assert.equal(packageJson.name, 'raulcardenasmontoya-me');
+  assert.equal(packageJson.repository.type, 'git');
+  assert.equal(packageJson.repository.url, 'git+https://github.com/rmems/raulcardenasmontoya.me.git');
+  assert.match(read('README.md'), /^# raulcardenasmontoya\.me$/m);
+  assert.match(
+    read('docs/coverage-and-quality.md'),
+    /https:\/\/app\.codecov\.io\/gh\/rmems\/raulcardenasmontoya\.me\b/,
+  );
+  assert.match(
+    read('src/native-evidence/view.ts'),
+    /PORTFOLIO_REPOSITORY_URL = 'https:\/\/github\.com\/rmems\/raulcardenasmontoya\.me'/,
+  );
+  for (const path of identityFiles) {
+    assert.doesNotMatch(read(path), /raulcardenasmontoya\.dev/, `${path} still names the old repository`);
+    assert.doesNotMatch(read(path), /rmems\/shipoftheseus\.dev/, `${path} still names the old repository`);
+  }
+});
+
 test('portfolio stays static and deploys only through GitHub Pages', () => {
   const astroConfig = read('astro.config.mjs');
   const workflow = read('.github/workflows/quality.yml');

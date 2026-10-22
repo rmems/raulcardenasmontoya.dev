@@ -1,7 +1,11 @@
 {
-  "name": "shipoftheseus-dev",
+  "name": "raulcardenasmontoya-me",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmems/raulcardenasmontoya.me.git"
+  },
   "type": "module",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
