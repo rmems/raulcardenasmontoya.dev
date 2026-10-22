@@ -616,6 +616,7 @@ test('Evidence and Notes stay out of the nav until they have published entries; 
 test('the about page is first person and the main pages carry their own meta descriptions', () => {
   const about = read('src/pages/about.astro');
   assert.match(about, /I'm \{site\.fullName\}\./);
+  assert.match(about, /import '\.\.\/styles\/about\.css';/);
   assert.match(about, /Western Governors University, expected September 2027/);
   assert.doesNotMatch(about, /systems-minded approach/);
   for (const page of ['index', 'about', 'contact', 'resume']) {
