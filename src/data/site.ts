@@ -23,6 +23,7 @@ export const navigation: NavItem[] = [
   { href: '/work/', label: 'Work' },
   { href: '/evidence/', label: 'Evidence', requires: 'evidence' },
   { href: '/labs/', label: 'Labs' },
+  { href: '/artifacts/', label: 'Artifacts' },
   { href: '/about/', label: 'About' },
   { href: '/notes/', label: 'Notes', requires: 'notes' },
   ...(site.resumePath ? [{ href: site.resumePath, label: 'Résumé' }] : []),
