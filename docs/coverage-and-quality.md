@@ -2,14 +2,14 @@
 
 This repository uses **Codecov** for test coverage reporting and **Qlty Cloud**
 for PR analysis (`qlty check`) and optional coverage mirroring. The **Quality**
-workflow (`quality.yml`) runs `npm run validate`, then (on trusted same-repo
-refs) generates LCOV and uploads to Codecov/Qlty.
+workflow (`quality.yml`) runs `npm run validate` and, in parallel on trusted
+same-repo refs, generates LCOV and uploads to Codecov/Qlty.
 
 ## What runs where
 
 | Service | Role | CI job |
 | --- | --- | --- |
-| **Codecov** | Primary coverage dashboard: default-branch baseline, PR diffs, optional comments | `coverage-report` job in `.github/workflows/quality.yml` (after `validate` passes) |
+| **Codecov** | Primary coverage dashboard: default-branch baseline, PR diffs, optional comments | `coverage-report` job in `.github/workflows/quality.yml` (runs in parallel with `validate`; same-repo refs only) |
 | **Qlty Cloud (coverage)** | Same LCOV uploads as Codecov for teams using Qlty’s coverage UI; not a second source of truth | `coverage-report` job (token or OIDC upload) |
 | **Qlty `qlty check`** (GitHub App) | Workflow lint and maintainability on the PR diff | Qlty GitHub integration (separate from LCOV upload) |
 | **ESLint / Clippy / fmt** | Authoritative linters for JS/TS and Rust | `quality.yml` |
