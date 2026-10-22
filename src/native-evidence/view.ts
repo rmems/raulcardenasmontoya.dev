@@ -74,7 +74,7 @@ export function nativeEvidenceKindLabel(kind: NativeEvidenceKind): string {
   }
 }
 
-export const PORTFOLIO_REPOSITORY_URL = 'https://github.com/rmems/raulcardenasmontoya.dev';
+export const PORTFOLIO_REPOSITORY_URL = 'https://github.com/rmems/raulcardenasmontoya.me';
 export const PORTFOLIO_DEFAULT_REF = 'main';
 
 export function artifactSourceBlobUrl(artifact: NativeEvidenceArtifact): string {

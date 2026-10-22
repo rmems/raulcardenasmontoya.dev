@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Amp orb setup for shipoftheseus.dev.
+# Amp orb setup for raulcardenasmontoya.me.
 #
 # Amp runs this from the repository root when it builds a project orb snapshot
 # (Debian 12, CPU only: orbs have no GPU). It must finish within 20 minutes and
@@ -74,7 +74,7 @@ cargo fetch --locked --manifest-path crates/neuromorphic-adapter/Cargo.toml
 tool_dirs=("$HOME/.cargo/bin")
 # shellcheck disable=SC2016 # $PATH must expand when the profile is sourced, not now.
 printf 'export PATH="%s:$PATH"\n' "$(IFS=:; echo "${tool_dirs[*]}")" |
-  $SUDO tee /etc/profile.d/amp-orb-shipoftheseus.dev.sh >/dev/null
+  $SUDO tee /etc/profile.d/amp-orb-raulcardenasmontoya.me.sh >/dev/null
 for dir in "${tool_dirs[@]}"; do
   [ -d "$dir" ] || continue
   for tool in "$dir"/*; do
@@ -88,4 +88,4 @@ for dir in "${tool_dirs[@]}"; do
   done
 done
 
-echo "Amp orb setup for shipoftheseus.dev finished."
+echo "Amp orb setup for raulcardenasmontoya.me finished."

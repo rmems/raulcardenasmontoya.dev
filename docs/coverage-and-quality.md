@@ -109,7 +109,7 @@ commit.
    the commit. The app does not scan the repo by itself; it reacts to uploads from
    the `coverage report and uploads` job. `CODECOV_TOKEN` (or OIDC) performs the
    upload; the app posts PR checks and comments. If the app is already installed but
-   checks are missing, open [Codecov → raulcardenasmontoya.dev → Commits](https://app.codecov.io/gh/rmems/raulcardenasmontoya.dev)
+   checks are missing, open [Codecov → raulcardenasmontoya.me → Commits](https://app.codecov.io/gh/rmems/raulcardenasmontoya.me)
    and confirm the PR head SHA appears after a green upload job.
 5. **First `main` upload** — patch/project checks need a baseline on the default
    branch; merge or push a green `coverage-report` run on `main` once.
