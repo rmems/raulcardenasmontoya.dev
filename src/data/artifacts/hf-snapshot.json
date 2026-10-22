@@ -228,17 +228,23 @@
     {
       "id": "rmems/grok-1-dissect-artifacts",
       "dataFiles": 26,
-      "status": []
+      "status": [
+        "personal-research"
+      ]
     },
     {
       "id": "rmems/grok-1-goz1-packs",
       "dataFiles": 61,
-      "status": []
+      "status": [
+        "personal-research"
+      ]
     },
     {
       "id": "rmems/grok-1-ternary-quant-experiments",
       "dataFiles": 49,
-      "status": []
+      "status": [
+        "personal-research"
+      ]
     },
     {
       "id": "rmems/incident-response-oncall-trajectories",

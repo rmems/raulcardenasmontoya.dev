@@ -18,6 +18,7 @@ export function classifyCardStatus(readme) {
     .replace(/\s+/g, ' ');
   const flags = [];
   if (/research[- _](?:only|corpus|snapshot)/i.test(text)) flags.push('research-only');
+  if (/personal[- _]research/i.test(text)) flags.push('personal-research');
   if (/raw,?\s+uncurated|raw_uncurated/i.test(text)) flags.push('raw-uncurated');
   if (/not\s+(?:\w+\s+)?training[- ]?(?:data|ready)|training_ready:\s*`?false/i.test(text)) flags.push('not-training-data');
   return flags;
@@ -25,6 +26,7 @@ export function classifyCardStatus(readme) {
 
 export const STATUS_LABELS = {
   'research-only': 'Research-only',
+  'personal-research': 'Personal research',
   'raw-uncurated': 'Raw / uncurated',
   'not-training-data': 'Not training data',
 };
@@ -42,11 +44,15 @@ export function listableRepos(repos) {
 async function getJson(url, fetchImpl) {
   const response = await fetchImpl(url, { signal: globalThis.AbortSignal.timeout(20_000) });
   if (!response.ok) throw new Error(`${url} -> HTTP ${response.status}`);
+  // Listings are cursor-paginated; refuse a truncated list rather than silently drop repos.
+  if (/rel="next"/.test(response.headers?.get?.('link') ?? '')) throw new Error(`${url} is paginated beyond the requested limit`);
   return response.json();
 }
 
 async function getText(url, fetchImpl) {
   const response = await fetchImpl(url, { signal: globalThis.AbortSignal.timeout(20_000) });
+  // A repo with data but no card is still listable; it just has no status label.
+  if (response.status === 404) return '';
   if (!response.ok) throw new Error(`${url} -> HTTP ${response.status}`);
   return response.text();
 }

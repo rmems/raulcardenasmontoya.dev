@@ -16,13 +16,13 @@ const number = new Intl.NumberFormat('en-US');
   <section class="section artifacts-section" aria-labelledby="artifacts-hf-title" data-hf-source={hf.source}>
     <p class="eyebrow">Hugging Face · as of {hf.asOf}</p>
     <h2 id="artifacts-hf-title">{hf.datasets.length} datasets, {hf.models.length} {hf.models.length === 1 ? 'model' : 'models'}.</h2>
-    <p class="artifacts-note">Each label is the status its own dataset card states. A card with no label here states none. Repos that hold only a card and no data are not listed. Counts as of {hf.asOf}{hf.source === 'snapshot' ? ' (snapshot; the Hugging Face API was unreachable at build time)' : ''}.</p>
+    <p class="artifacts-note">Each label is the status its own dataset card states. A missing label means none of the status wording this page recognizes (research-only, personal research, raw/uncurated, not training data) appears on the card; read the card itself. Repos that hold only a card and no data are not listed. Counts as of {hf.asOf}{hf.source === 'snapshot' ? (hf.fallbackReason === 'skipped' ? ' (from the committed snapshot; the live fetch was skipped for this build)' : ' (from the committed snapshot; the Hugging Face API was unreachable at build time)') : ''}.</p>
 
     <h3>Datasets</h3>
     <ul class="artifact-list" data-hf-datasets>
       {hf.datasets.map((dataset) => (
         <li>
-          <a href={dataset.url} target="_blank" rel="noreferrer">{dataset.id}</a>
+          <a href={dataset.url} target="_blank" rel="noopener noreferrer">{dataset.id}</a>
           {dataset.statusLabels.length > 0 ? <span class="artifact-status">{dataset.statusLabels.join(' · ')}</span> : null}
         </li>
       ))}
@@ -31,7 +31,7 @@ const number = new Intl.NumberFormat('en-US');
     <h3>Models</h3>
     <ul class="artifact-list" data-hf-models>
       {hf.models.map((model) => (
-        <li><a href={model.url} target="_blank" rel="noreferrer">{model.id}</a></li>
+        <li><a href={model.url} target="_blank" rel="noopener noreferrer">{model.id}</a></li>
       ))}
     </ul>
   </section>
@@ -43,7 +43,7 @@ const number = new Intl.NumberFormat('en-US');
     <ul class="artifact-list" data-upstream-prs>
       {upstreamPrs.map((pr) => (
         <li>
-          <a href={prUrl(pr)} target="_blank" rel="noreferrer">{pr.repo}#{pr.number}</a>: {pr.title}
+          <a href={prUrl(pr)} target="_blank" rel="noopener noreferrer">{pr.repo}#{pr.number}</a>: {pr.title}
           <span class="artifact-status">merged {pr.mergedAt} · +{number.format(pr.additions)} −{number.format(pr.deletions)} · {pr.changedFiles} files</span>
         </li>
       ))}
