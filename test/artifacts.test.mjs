@@ -26,12 +26,12 @@ test('personal-research wording on the Grok-1 cards gets its own label, not rese
 });
 
 test('a missing card is an empty status, and a paginated listing is refused', async () => {
-  const json = (body, headers = {}) => ({ ok: true, status: 200, headers: new Headers(headers), json: async () => body });
+  const json = (body, headers = {}) => ({ ok: true, status: 200, headers: new globalThis.Headers(headers), json: async () => body });
   const fetchImpl = async (url) => {
     if (url.includes('/api/datasets?')) return json([{ id: 'rmems/nocard' }]);
     if (url.includes('/api/models?')) return json([]);
     if (url.includes('/api/datasets/')) return json({ siblings: [{ rfilename: 'data.jsonl' }] });
-    return { ok: false, status: 404, headers: new Headers() };
+    return { ok: false, status: 404, headers: new globalThis.Headers() };
   };
   const result = await fetchHfSnapshot({ fetchImpl });
   assert.deepEqual(result.datasets, [{ id: 'rmems/nocard', dataFiles: 1, status: [] }]);
