@@ -1,0 +1,576 @@
+{
+  "asOf": "2026-10-22",
+  "source": "https://huggingface.co/api/datasets?author=rmems",
+  "datasets": [
+    {
+      "id": "rmems/agent-honest-stop-episodes",
+      "dataFiles": 0,
+      "status": []
+    },
+    {
+      "id": "rmems/agent-memory-compaction-trajectories",
+      "dataFiles": 2847,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/agent-trajectory-preference-pairs",
+      "dataFiles": 1,
+      "status": []
+    },
+    {
+      "id": "rmems/agentic-coding-trajectories",
+      "dataFiles": 16,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/agentic-coding-trajectories-grok46",
+      "dataFiles": 52,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/api-contract-migration-trajectories",
+      "dataFiles": 9229,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/authz-regression-trajectories",
+      "dataFiles": 4641,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/browser-tool-use-trajectories",
+      "dataFiles": 4055,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/cache-stampede-trajectories",
+      "dataFiles": 4861,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/cascading-error-recovery-trajectories",
+      "dataFiles": 5885,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/code-review-preference-pairs",
+      "dataFiles": 3181,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/csv-excel-ingest-trajectories",
+      "dataFiles": 157,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/data-pipeline-repair-trajectories",
+      "dataFiles": 6665,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/db-migration-repair-trajectories",
+      "dataFiles": 2729,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/delegation-planning-trajectories",
+      "dataFiles": 1,
+      "status": []
+    },
+    {
+      "id": "rmems/distributed-lock-trajectories",
+      "dataFiles": 2593,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/docker-build-cache-trajectories",
+      "dataFiles": 3009,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/email-webhook-retry-trajectories",
+      "dataFiles": 105,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/eval-harness-trajectories",
+      "dataFiles": 5011,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/execution-verified-repair-trajectories",
+      "dataFiles": 3,
+      "status": []
+    },
+    {
+      "id": "rmems/failure-as-fuel-preference-cascade",
+      "dataFiles": 47,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/failure-as-fuel-preference-cascade-grok46",
+      "dataFiles": 29,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/feature-flag-debug-trajectories",
+      "dataFiles": 223,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/flaky-test-quarantine-trajectories",
+      "dataFiles": 1580,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/gaming-telemetry",
+      "dataFiles": 1,
+      "status": []
+    },
+    {
+      "id": "rmems/git-ops-recovery-trajectories",
+      "dataFiles": 3921,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/graphql-nplusone-trajectories",
+      "dataFiles": 635,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/grok-1-dissect-artifacts",
+      "dataFiles": 26,
+      "status": []
+    },
+    {
+      "id": "rmems/grok-1-goz1-packs",
+      "dataFiles": 61,
+      "status": []
+    },
+    {
+      "id": "rmems/grok-1-ternary-quant-experiments",
+      "dataFiles": 49,
+      "status": []
+    },
+    {
+      "id": "rmems/incident-response-oncall-trajectories",
+      "dataFiles": 10055,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/infra-as-code-trajectories",
+      "dataFiles": 5211,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/k8s-crashloop-trajectories",
+      "dataFiles": 3289,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/llm-eval-flakiness-trajectories",
+      "dataFiles": 5261,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/log-redaction-trajectories",
+      "dataFiles": 347,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/long-horizon-coding-trajectories",
+      "dataFiles": 11443,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/mcp-tool-schema-drift-trajectories",
+      "dataFiles": 2823,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/mcp-tool-use-episodes",
+      "dataFiles": 1,
+      "status": []
+    },
+    {
+      "id": "rmems/monorepo-dep-bump-trajectories",
+      "dataFiles": 3709,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/multi-agent-coordination-transcripts",
+      "dataFiles": 8783,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/multi-agent-ouroboros-swarm",
+      "dataFiles": 53,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/multi-agent-ouroboros-swarm-grok46",
+      "dataFiles": 47,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/neuromorphic-event-language-bridge",
+      "dataFiles": 38,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/neuromorphic-event-language-bridge-grok46",
+      "dataFiles": 47,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/notebook-to-pipeline-trajectories",
+      "dataFiles": 5131,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/observability-debug-trajectories",
+      "dataFiles": 2412,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/operation-prometheus-trajectories",
+      "dataFiles": 2,
+      "status": []
+    },
+    {
+      "id": "rmems/oracle-grounded-neuromorphic-20261006",
+      "dataFiles": 10,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/package-release-trajectories",
+      "dataFiles": 3017,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/payment-idempotency-trajectories",
+      "dataFiles": 697,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/prompt-cache-invalidation-trajectories",
+      "dataFiles": 3599,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/proto-breaking-change-trajectories",
+      "dataFiles": 5071,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/python-function-repair-20261006",
+      "dataFiles": 9,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/queue-backpressure-trajectories",
+      "dataFiles": 285,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/rag-retrieval-debug-trajectories",
+      "dataFiles": 3459,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/rate-limit-backoff-trajectories",
+      "dataFiles": 315,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/safety-calibration-cases",
+      "dataFiles": 10711,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/sandbox-refusal-trajectories",
+      "dataFiles": 3859,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/search-index-rebuild-trajectories",
+      "dataFiles": 253,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/secret-scan-remediation-trajectories",
+      "dataFiles": 3405,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/SEMM-Latent-Telemetry",
+      "dataFiles": 149,
+      "status": []
+    },
+    {
+      "id": "rmems/sparse-reward-long-tasks",
+      "dataFiles": 15939,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/Spikenaut-SNN-Telemetry",
+      "dataFiles": 42,
+      "status": []
+    },
+    {
+      "id": "rmems/ssl-cert-rotation-trajectories",
+      "dataFiles": 733,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/thalamic-relay-trajectories",
+      "dataFiles": 52,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/thalamic-relay-trajectories-grok46",
+      "dataFiles": 59,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/tool-use-preference-pairs",
+      "dataFiles": 3185,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    },
+    {
+      "id": "rmems/websocket-reconnect-trajectories",
+      "dataFiles": 325,
+      "status": [
+        "research-only",
+        "raw-uncurated",
+        "not-training-data"
+      ]
+    }
+  ],
+  "models": [
+    {
+      "id": "rmems/Spikenaut-SNN",
+      "dataFiles": 11
+    }
+  ]
+}

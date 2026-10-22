@@ -797,3 +797,9 @@ button.button {
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation: none !important; }
 }
+
+.artifacts-section h3 { margin: 2rem 0 0.6rem; }
+.artifacts-note { max-width: 42rem; color: var(--ink); }
+.artifact-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); }
+.artifact-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--line-strong); overflow-wrap: anywhere; }
+.artifact-status { display: block; color: var(--muted); font-size: 0.9rem; }
