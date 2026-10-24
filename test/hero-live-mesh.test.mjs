@@ -159,7 +159,7 @@ test('the crate trail pins every layer exactly as the adapter manifest and lockf
       assert.match(dependency[1], new RegExp(`git = "${layer.source.repository}\\.git", rev = "${layer.source.revision}"`));
       assert.equal(locked[2], `git+${layer.source.repository}.git?rev=${layer.source.revision}#${layer.source.revision}`);
       assert.equal(runtimeData.crateLayerHref(layer), `${layer.source.repository}/tree/${layer.source.revision}`);
-      assert.equal(runtimeData.crateLayerPin(layer), `${layer.version} @ ${layer.source.revision.slice(0, 7)}`);
+      assert.equal(runtimeData.crateLayerPin(layer), `pinned commit ${layer.source.revision.slice(0, 7)} (${layer.version})`);
     } else {
       const exact = `"=${layer.version}"`;
       assert.ok(

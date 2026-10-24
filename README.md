@@ -1,6 +1,6 @@
 # raulcardenasmontoya.me
 
-A static Astro + TypeScript portfolio for AI/ML systems engineering. It deploys to GitHub Pages at `raulcardenasmontoya.me` from `main`.
+A static Astro + TypeScript portfolio for AI/ML systems engineering. It deploys to GitHub Pages at `raulcardenasmontoya.me` from `main`. The repository is named `rmems/raulcardenasmontoya.me` to match the canonical domain; earlier names are retired.
 
 ## Local development
 
