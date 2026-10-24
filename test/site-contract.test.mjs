@@ -671,6 +671,8 @@ test('the about page is first person and the main pages carry their own meta des
   assert.match(about, /I'm \{site\.fullName\}\./);
   assert.match(about, /import '\.\.\/styles\/about\.css';/);
   assert.match(about, /Western Governors University, expected September 2027/);
+  assert.match(about, /Texas State University \(Spring 2026\), Concordia University Texas \(Computer Science, Fall 2025\), and Austin Community College \(Business Administration, 2019–2025\)/);
+  assert.doesNotMatch(about, /Concordia Texas University|Electrical Engineering/);
   assert.doesNotMatch(about, /systems-minded approach/);
   for (const page of ['index', 'about', 'contact', 'resume']) {
     assert.match(read(`src/pages/${page}.astro`), /<BaseLayout[^>]* description="[^"]{40,}"/, page);
