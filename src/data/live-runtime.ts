@@ -49,9 +49,13 @@ export function crateLayerHref(layer: LiveCrateLayer): string {
     : `https://crates.io/crates/${layer.name}/${layer.version}`;
 }
 
-/** Short pin shown next to the crate name. */
+/**
+ * Short pin shown next to the crate name. Git layers name the pinned commit
+ * the WASM build uses, so an unpublished or older version string is never
+ * read as a crates.io release.
+ */
 export function crateLayerPin(layer: LiveCrateLayer): string {
-  return layer.source.kind === 'git' ? `${layer.version} @ ${layer.source.revision.slice(0, 7)}` : layer.version;
+  return layer.source.kind === 'git' ? `pinned commit ${layer.source.revision.slice(0, 7)} (${layer.version})` : layer.version;
 }
 
 /** The site's adapter crate that composes the layers and owns the WASM boundary. */
